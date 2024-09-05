@@ -69,7 +69,7 @@ function tracker() {
 
 async function load() {
     try {
-        const response = await fetch('./league/settler/map.config');
+        const response = await fetch('./league/settler/map.mods.config');
 
         if (!response.ok) {
             throw new Error(`HTTP: ${response.status}`);
