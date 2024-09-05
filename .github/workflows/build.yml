@@ -15,7 +15,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    steps:
     - name: Download Map Modifier JSON
       run: |
         curl -L -o map.data.json https://poedb.tw/us/api/MapMods
