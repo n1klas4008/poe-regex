@@ -70,7 +70,6 @@ function generate() {
 }
 
 function modal(status: boolean) {
-    console.log("modal show: " + status);
     const overlay = document.getElementById('overlay')!;
     const modal = document.getElementById('modal')!;
     const body = document.body!;
