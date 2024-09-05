@@ -43,7 +43,7 @@ function generate() {
     let result: Set<string> = new Set<string>();
 
     exclude.create(result, upgrade(exclusive));
-    let regex = Array.from(result).join("|");
+    let regex = Array.from(result).join("|").replace(/#/g, "\\d+");
     regex = `"!${regex}"`;
 
     document.getElementById('regex')!.innerText = regex;
