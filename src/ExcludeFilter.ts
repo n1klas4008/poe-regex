@@ -1,13 +1,16 @@
 import {substrings} from "./Global";
 import {Modifier} from "./Modifier";
 import {upgrade} from "./T17";
+import {Blacklist} from "./Blacklist";
 
 export class ExcludeFilter {
 
     private readonly modifiers: Modifier[];
+    private readonly blacklist: Blacklist;
 
-    constructor(modifiers: Modifier[]) {
+    constructor(modifiers: Modifier[], blacklist: Blacklist) {
         this.modifiers = modifiers;
+        this.blacklist = blacklist;
     }
 
     private match(substring: string, modifiers: string[]): boolean {
@@ -25,18 +28,18 @@ export class ExcludeFilter {
 
         for (let i = 0; i < required.length; i++) {
             let modifier = required[i];
-            let list = substrings(modifier);
+            let list = substrings(modifier, this.blacklist);
             list.forEach(item => options.add(item));
         }
 
         const map: Map<string, number> = new Map<string, number>();
         let count = 2;
-
+        let any = false;
         while (required.length > 0) {
             const size = count;
             const list: string[] = Array.from(options).filter(option => option.length === size);
 
-            if (list.length === 0) break;
+            if (list.length === 0 && any) break;
 
             for (const substring of list) {
                 if (substring.length >= 20) break;
@@ -47,6 +50,7 @@ export class ExcludeFilter {
                         map.set(substring, 0);
                     }
                     map.set(substring, (map.get(substring) || 0) + 1);
+                    if (!any) any = true;
                 }
             }
 
