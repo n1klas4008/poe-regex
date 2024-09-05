@@ -84,10 +84,10 @@ async function load() {
 }
 
 function build(config: string) {
-    let line = config.split("\r\n");
+    let line = config.split("\n");
     let targets = document.querySelectorAll(".mod-container")
     for (let i = 0; i < line.length; i++) {
-        let modifier = line[i];
+        let modifier = line[i].trim();
         let index = modifier.indexOf("(T17)");
         if (index != -1) modifier = modifier.substring(6);
         const mod = new Modifier(modifier, index == -1);
