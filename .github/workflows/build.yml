@@ -12,13 +12,17 @@ jobs:
     if: github.ref == 'refs/heads/dev'
 
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    steps:
     - name: Download Map Modifier JSON
       run: |
         curl -L -o map.data.json https://poedb.tw/us/api/MapMods
     
     - name: Build Map Affix config
       run: |
-        jq -r '.data[].Name' map.data.json > public/league/settler/map.affix.config
+        jq -r '.data[].Name' map.data.json > ./public/league/settler/map.affix.config
 
     - name: Commit and push map.affix.config
       run: |
