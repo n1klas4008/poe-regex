@@ -2,15 +2,28 @@ import {upgrade} from "./T17";
 import {Modifier} from "./Modifier";
 import {ModifierType} from "./ModifierType";
 import {ExcludeFilter} from "./ExcludeFilter";
+import {Blacklist} from "./Blacklist";
 
 const call = performance.now();
 
+let blacklist = new Blacklist();
 let modifiers: Modifier[] = [];
 let exclusive: string[] = [];
 let inclusive: string[] = [];
 
 document.addEventListener('DOMContentLoaded', () => {
-    load().then(() => setup()).then(() => tracker());
+    const entries = [
+        "./league/settler/map.name.config",
+        "./league/settler/map.affix.config", // probably better to disable this due to heavy overlaps
+        "./league/settler/map.general.config"
+    ];
+    read(entries)
+        .then(responses => initialize(responses))
+        .then(list => {
+            blacklist = list;
+            load().then(() => setup()).then(() => tracker());
+        })
+        .catch(error => exceptional(error));
 });
 
 function setup() {
@@ -33,26 +46,31 @@ function setup() {
     });
 
     document.getElementById('generate')!.addEventListener('click', () => {
+        document.getElementById('hint')!.innerText = `length: 0 / 50`;
+        document.getElementById('regex')!.innerText = "";
+        setTimeout(generate, 1000);
         modal(true);
-        generate();
     });
 }
 
 function generate() {
-    let exclude = new ExcludeFilter(modifiers);
+    let exclude = new ExcludeFilter(modifiers, blacklist);
     let result: Set<string> = new Set<string>();
+    try {
+        exclude.create(result, upgrade(exclusive));
+        let regex = Array.from(result).join("|").replace(/#/g, "\\d+");
+        regex = `"!${regex}"`;
 
-    exclude.create(result, upgrade(exclusive));
-    let regex = Array.from(result).join("|").replace(/#/g, "\\d+");
-    regex = `"!${regex}"`;
-
-    document.getElementById('regex')!.innerText = regex;
-    document.getElementById('hint')!.innerText = `length: ${regex.length} / 50`;
-
+        document.getElementById('regex')!.innerText = regex;
+        document.getElementById('hint')!.innerText = `length: ${regex.length} / 50`;
+    } catch (error) {
+        console.error(error);
+    }
     modal(false);
 }
 
 function modal(status: boolean) {
+    console.log("modal show: " + status);
     const overlay = document.getElementById('overlay')!;
     const modal = document.getElementById('modal')!;
     const body = document.body!;
@@ -68,19 +86,30 @@ function tracker() {
 }
 
 async function load() {
-    try {
-        const response = await fetch('./league/settler/map.config');
+    read(["./league/settler/map.mods.config"])
+        .then(responses => responses[0])
+        .then(response => build(response))
+}
 
+
+async function read(urls: string[]): Promise<string[]> {
+    const requests = urls.map(url => fetch(url).then(response => {
         if (!response.ok) {
-            throw new Error(`HTTP: ${response.status}`);
+            throw new Error(`Failed to load ${url}: ${response.status} ${response.statusText}`);
         }
+        return response.text();
+    }));
+    return Promise.all(requests);
+}
 
-        const config = await response.text();
-
-        build(config)
-    } catch (error) {
-        exceptional(error);
+function initialize(array: string[]): Blacklist {
+    const blacklist = new Blacklist();
+    for (let i = 0; i < array.length; i++) {
+        let content = array[i];
+        let lines = content.split("\n");
+        blacklist.populate(lines);
     }
+    return blacklist;
 }
 
 function build(config: string) {

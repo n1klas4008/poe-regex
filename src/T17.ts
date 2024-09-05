@@ -1,5 +1,3 @@
-const ALL_MAX_RESISTANCES_DECREASE = "Players have -#% to all maximum Resistances";
-const MAX_RESISTANCES_MINUS_12_TO_MINUS_9 = "Players have -#% to all maximum Resistances";
 const MORE_MONSTER_LIFE = "#% more Monster Life";
 const MORE_MONSTER_LIFE_CANNOT_BE_STUNNED = "#% more Monster Life Monsters cannot be Stunned";
 const PHYSICAL_TO_CHAOS_DAMAGE = "Monsters gain #% of their Physical Damage as Extra Chaos Damage";
@@ -27,9 +25,6 @@ const INCREASED_RARE_MONSTERS = "#% increased number of Rare Monsters";
 const RARE_MONSTERS_AND_MODIFIERS = "#% increased number of Rare Monsters Rare Monsters each have 2 additional Modifiers";
 
 const mapping: Map<string, string[]> = new Map([
-    [ALL_MAX_RESISTANCES_DECREASE, [ALL_MAX_RESISTANCES_DECREASE, MAX_RESISTANCES_MINUS_12_TO_MINUS_9]],
-    [MAX_RESISTANCES_MINUS_12_TO_MINUS_9, [ALL_MAX_RESISTANCES_DECREASE, MAX_RESISTANCES_MINUS_12_TO_MINUS_9]],
-
     [MORE_MONSTER_LIFE, [MORE_MONSTER_LIFE, MORE_MONSTER_LIFE_CANNOT_BE_STUNNED]],
     [MORE_MONSTER_LIFE_CANNOT_BE_STUNNED, [MORE_MONSTER_LIFE, MORE_MONSTER_LIFE_CANNOT_BE_STUNNED]],
 
