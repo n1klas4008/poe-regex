@@ -25,23 +25,17 @@ jobs:
     - name: Build the project
       run: npm run build
     
-    - name: Upload build artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: bundle
-        path: public
-
     - name: Commit and push bundle.js
       if: github.ref == 'refs/heads/dev'
       run: |
+        git checkout dev
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         git add public/bundle.js
         git commit -m "Build: update bundle.js"
-        git push
+        git push origin dev
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 
   deploy:
     if: github.ref == 'refs/heads/main'
