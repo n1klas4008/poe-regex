@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monster Modifiers Selector</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+<div id="overlay" class="hidden"></div>
+<div id="modal" class="hidden">
+    <div class="modal-content">
+        <p>Crunching numbers</p>
+        <div class="loader"></div>
+    </div>
+</div>
+<div id="wrapper">
+    <div id="headline">
+        Path of <b class="highlight-headline">Exile</b> Map <b class="highlight-headline">Re</b>gex Generator
+    </div>
+    <div id="result">
+        <div class="split-view consume-all">
+            <div class="split-view-container display">
+                <div id="regex" class="grid-content"></div>
+                <div id="hint" class="regex-hint grid-content">length: 0 / 50</div>
+            </div>
+            <div class="split-view-container display align-right">
+                <button id="generate">Generate</button>
+            </div>
+        </div>
+    </div>
+    <div class="split-view">
+        <div id="exclusive" class="split-view-container">
+            <div class="filter-header">
+                <div class="column-header">I don't want any of these mods</div>
+            </div>
+            <input type="text" class="container-search" placeholder="search for a mod...">
+            <div class="mod-container">
+
+            </div>
+        </div>
+        <div id="inclusive" class="split-view-container disabled">
+            <div class="filter-header">
+                <div class="column-header">FEATURE IN DEVELOPMENT</div>
+                <div class="grid-group">
+                    <div>
+                        <input type="checkbox" id="any" name="any" value="or">
+                        <label for="any"> I want any of the modifiers</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="all" name="all" value="and">
+                        <label for="all"> I want all of the modifiers</label>
+                    </div>
+                </div>
+            </div>
+            <input type="text" class="container-search" placeholder="search for a mod...">
+            <div class="mod-container">
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="./bundle.js"></script>
+</body>
+
+</html>
