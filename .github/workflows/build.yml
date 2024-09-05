@@ -17,16 +17,43 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '20'  # You can specify your desired version
+        node-version: '20'
 
     - name: Install dependencies
       run: npm install
 
     - name: Build the project
       run: npm run build
-
+    
     - name: Upload build artifact
       uses: actions/upload-artifact@v3
       with:
         name: bundle
-        path: public/bundle.js
+        path: public
+
+    - name: Commit and push bundle.js
+      if: github.ref == 'refs/heads/dev'
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add public/bundle.js
+        git commit -m "Build: update bundle.js"
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./public
