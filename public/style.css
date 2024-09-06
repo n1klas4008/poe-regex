@@ -111,6 +111,25 @@ body.no-scroll {
     color: white;
 }
 
+.configuration {
+    padding: 10px;
+    font-size: 20px;
+}
+
+.config {
+    display: flex;
+    padding-bottom: 10px;
+}
+
+.smart-input {
+    margin: 0px 10px;
+    width: 50px;
+}
+
+.vertical {
+    flex-direction: column;
+}
+
 .split-view {
     display: flex;
     flex-direction: row;
@@ -151,6 +170,10 @@ body.no-scroll {
     background: #2C2C2C;
     border-radius: 7px;
     padding: 5px;
+}
+
+.t17 {
+    background: #453d57;
 }
 
 .selectable:hover {

@@ -24,7 +24,7 @@ export class ExcludeFilter {
         return false;
     }
 
-    private unique(substring: string, modifiers: Modifier[]): boolean {
+    private unique(substring: string, modifiers: Modifier[], result: Set<string>): boolean {
         for (let i = 0; i < this.modifiers.length; i++) {
             let modifier = this.modifiers[i];
             let info = modifier.getModifier().toLowerCase();
@@ -35,6 +35,18 @@ export class ExcludeFilter {
                     continue;
                 }
                 // if the matched mod is not part of what we need this substring becomes unusable
+                // unless we already have a matching result for it
+
+                let match = false;
+                for (const regex of result) {
+                    if (modifier.getModifier().toLowerCase().includes(regex)) {
+                        match = true;
+                    }
+                }
+
+                // ignore this mod since we have already matched it anyway with something else
+                if (match) continue;
+
                 if (!this.includes(modifier, modifiers)) {
                     return false;
                 }
@@ -53,7 +65,7 @@ export class ExcludeFilter {
         // to prevent this upgrade pools in those mods to the mods we require
         // otherwise it would be unable to find anything unique for the substring
         // and since we can use substrings for more than one mod this solves the issue
-        required = association.upgrade(this.t17, required);
+        required = association.upgrade(this.t17, required, result);
 
         // generate a list of substrings for all required mods
         let options: Set<string> = new Set();
@@ -77,7 +89,7 @@ export class ExcludeFilter {
                 // stop if the substrings become to long to save time
                 if (substring.length >= 20) break;
                 // ensure substring is unique and not part of any other mod other than the ones we need
-                if (!this.unique(substring, required)) continue;
+                if (!this.unique(substring, required, result)) continue;
                 // keep track how many of the mods we need, we can match with this one substring
                 for (const modifier of required) {
                     if (!modifier.getModifier().toLowerCase().includes(substring.toLowerCase())) continue;
