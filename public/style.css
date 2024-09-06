@@ -111,6 +111,25 @@ body.no-scroll {
     color: white;
 }
 
+.configuration {
+    padding: 10px;
+    font-size: 20px;
+}
+
+.config {
+    display: flex;
+    padding-bottom: 10px;
+}
+
+.smart-input {
+    margin: 0px 10px;
+    width: 50px;
+}
+
+.vertical {
+    flex-direction: column;
+}
+
 .split-view {
     display: flex;
     flex-direction: row;
@@ -153,6 +172,10 @@ body.no-scroll {
     padding: 5px;
 }
 
+.t17 {
+    background: #453d57;
+}
+
 .selectable:hover {
     background: #404040;
     cursor: pointer;
@@ -179,6 +202,28 @@ body.no-scroll {
     border-radius: 5px;
     z-index: 1;
     pointer-events: none;
+}
+
+.styled-button {
+    background-color: #4A90E2;
+    color: #FFF;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 24px;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.styled-button:hover {
+    background-color: #357ABD;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+}
+
+.styled-button:active {
+    background-color: #2C5AA0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .hidden {

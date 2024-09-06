@@ -4,31 +4,31 @@ export class MapAssociation {
 
     // array structure, index in map.mods.config, index of shared mods
     private readonly array: any[] = [
-        [91, [92]],
-        [92, [91]],
-        [19, [61]],
-        [61, [19]],
-        [50, [51, 28]],
-        [51, [50, 28]],
-        [28, [50, 51]],
-        [62, [65, 26]],
-        [65, [62, 26]],
-        [26, [62, 65]],
-        [67, [15]],
-        [15, [67]],
-        [73, [75, 76, 34]],
-        [75, [73, 76, 34]],
-        [76, [73, 75, 34]],
-        [34, [73, 75, 76]],
-        [87, [93, 2]],
-        [93, [87, 2]],
-        [2, [87, 93]],
+        [90, [91]],
+        [91, [90]],
+        [18, [60]],
+        [60, [18]],
+        [49, [50, 27]],
+        [50, [49, 27]],
+        [27, [49, 50]],
+        [61, [64, 25]],
+        [64, [61, 25]],
+        [25, [61, 64]],
+        [66, [14]],
+        [14, [66]],
+        [72, [74, 75, 33]],
+        [74, [72, 75, 33]],
+        [75, [72, 74, 33]],
+        [33, [72, 74, 75]],
+        [86, [92, 2]],
+        [92, [86, 2]],
+        [2, [86, 92]],
+        [102, [21]],
+        [21, [102]],
         [103, [22]],
         [22, [103]],
-        [104, [23]],
-        [23, [104]],
-        [126, [1]],
-        [1, [126]],
+        [125, [1]],
+        [1, [125]],
     ];
 
     private mapping: Map<Modifier, Modifier[]> = new Map<Modifier, Modifier[]>();
@@ -70,7 +70,11 @@ export class MapAssociation {
     }
 
     // fill array with any mod that is associated to one of the present and required mods
-    public upgrade(t17: boolean, required: Modifier[]): Modifier[] {
+    // only add the t17 mods into the pool from the mapping since we don't want to create
+    // a regex that matches more than what we need, would be extra characters
+    // if t17 mode is enabled then we need to add everything, for this case we also need
+    // to know the current result set to avoid endlessly adding things we have already matched
+    public upgrade(t17: boolean, required: Modifier[], result: Set<string>): Modifier[] {
         const set = new Set(required);
         const keys = Array.from(this.mapping.keys());
 
@@ -79,8 +83,22 @@ export class MapAssociation {
                 if (modifier.equals(key)) {
                     let associations = this.mapping.get(key) || [];
                     for (const association of associations) {
-                        if (!association.isT17() || t17) {
-                            set.add(association);
+                        if (t17 || association.isT17() || association.getModifier().includes("#% more Monster Life")) {
+                            // check if we have this matched already, assume no by default
+                            let matched = false;
+                            for (const expression of result) {
+                                if (association.getModifier().toLowerCase().includes(expression)) {
+                                    matched = true;
+                                    break;
+                                }
+                            }
+                            // only add if it's not already matched by a result
+                            if (!matched) {
+                                console.log("+ " + key.getModifier())
+                                console.log("> " + association.getModifier())
+                                console.log("---")
+                                set.add(association);
+                            }
                         }
                     }
                 }

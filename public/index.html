@@ -24,11 +24,49 @@
         <div class="split-view consume-all">
             <div class="split-view-container display">
                 <div id="regex" class="grid-content"></div>
-                <div id="hint" class="regex-hint grid-content">length: 0 / 50</div>
+                <div id="hint" class="regex-hint grid-content"></div>
             </div>
             <div class="split-view-container display align-right">
-                <button id="generate">Generate</button>
+                <button id="generate" class="styled-button">Generate</button>
             </div>
+        </div>
+    </div>
+    <div class="configuration">
+        <div class="config">
+            <span>Quantity of at least</span>
+            <input type="text" id="quantity" class="smart-input trigger-1">
+            <span>Pack Size of at least</span>
+            <input type="text" id="pack-size" class="smart-input trigger-1">
+        </div>
+        <div class="config vertical">
+            <div>
+                <input type="checkbox" id="optimize-quantity" class="trigger-0" checked>
+                <label for="optimize-quantity"> Optimize Quantity value</label>
+            </div>
+            <div>
+                <input type="checkbox" id="optimize-pack" class="trigger-0" checked>
+                <label for="optimize-pack"> Optimize Pack Size value</label>
+            </div>
+        </div>
+        <div class="config vertical">
+            <div>
+                <input type="checkbox" id="map-normal" data-map-selection="true" class="trigger-0" checked>
+                <label for="map-normal"> Normal Maps</label>
+                <input type="checkbox" id="map-magic" data-map-selection="true" class="trigger-0" checked>
+                <label for="map-magic"> Magic Maps</label>
+                <input type="checkbox" id="map-rare" data-map-selection="true" class="trigger-0" checked>
+                <label for="map-rare"> Rare Maps</label>
+            </div>
+            <div>
+                <input type="checkbox" id="maps-include" class="btn-group-0 trigger-0" checked>
+                <label for="maps-include"> Include</label>
+                <input type="checkbox" id="maps-exclude" class="btn-group-0 trigger-0">
+                <label for="maps-exclude"> Exclude</label>
+            </div>
+        </div>
+        <div class="config">
+            <input type="checkbox" id="t17" class="trigger-0">
+            <label for="t17"> T17 mods are relevant</label>
         </div>
     </div>
     <div class="split-view">
