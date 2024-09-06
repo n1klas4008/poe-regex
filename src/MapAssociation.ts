@@ -1,84 +1,92 @@
 import {Modifier} from "./Modifier";
 
+export class MapAssociation {
 
+    // array structure, index in map.mods.config, index of shared mods
+    private readonly array: any[] = [
+        [91, [92]],
+        [92, [91]],
+        [19, [61]],
+        [61, [19]],
+        [50, [51, 28]],
+        [51, [50, 28]],
+        [28, [50, 51]],
+        [62, [65, 26]],
+        [65, [62, 26]],
+        [26, [62, 65]],
+        [67, [15]],
+        [15, [67]],
+        [73, [75, 76, 34]],
+        [75, [73, 76, 34]],
+        [76, [73, 75, 34]],
+        [34, [73, 75, 76]],
+        [87, [93, 2]],
+        [93, [87, 2]],
+        [2, [87, 93]],
+        [103, [22]],
+        [22, [103]],
+        [104, [23]],
+        [23, [104]],
+        [126, [1]],
+        [1, [126]],
+    ];
 
-const MORE_MONSTER_LIFE = new Modifier("#% more Monster Life", false); // 94
-const MORE_MONSTER_LIFE_CANNOT_BE_STUNNED = new Modifier("#% more Monster Life Monsters cannot be Stunned", false); // 95
-const PHYSICAL_TO_CHAOS_DAMAGE = new Modifier("Monsters gain #% of their Physical Damage as Extra Chaos Damage", true); // 22
-const PHYSICAL_TO_CHAOS_DAMAGE_WITHER = new Modifier("Monsters gain #% of their Physical Damage as Extra Chaos Damage Monsters Inflict Withered for 2 seconds on Hit", false); // 64
-const REFLECT_ELEMENTAL_DAMAGE = new Modifier("Monsters reflect #% of Elemental Damage", false); // 53
-const REFLECT_PHYSICAL_DAMAGE = new Modifier("Monsters reflect #% of Physical Damage", false); // 54
-const REFLECT_ALL_DAMAGE = new Modifier("Monsters reflect #% of Physical Damage Monsters reflect #% of Elemental Damage", true); // 31
-const FIRE_2_ADDITIONAL_PROJECTILES = new Modifier("Monsters fire 2 additional Projectiles", false); // 65
-const INCREASED_AOE = new Modifier("Monsters have #% increased Area of Effect", false); // 68
-const INCREASED_AOE_AND_PROJECTILES = new Modifier("Monsters have #% increased Area of Effect Monsters fire 2 additional Projectiles", true); // 29
-const POISON_ON_HIT = new Modifier("Monsters Poison on Hit", false); // 70
-const POISON_ON_HIT_WITH_DURATION = new Modifier("Monsters Poison on Hit All Damage from Monsters' Hits can Poison Monsters have #% increased Poison Duration", true); // 18
-const CURSED_WITH_ELEMENTAL_WEAKNESS = new Modifier("Players are Cursed with Elemental Weakness", false); // 76
-const CURSED_WITH_TEMPORAL_CHAINS = new Modifier("Players are Cursed with Temporal Chains", false); // 78
-const CURSED_WITH_VULNERABILITY = new Modifier("Players are Cursed with Vulnerability", false); // 79
-const CURSED_WITH_ALL = new Modifier("Players are Cursed with Vulnerability Players are Cursed with Temporal Chains Players are Cursed with Elemental Weakness", true); // 37
-const PHYSICAL_DAMAGE_REDUCTION = new Modifier("+#% Monster Physical Damage Reduction", false); // 90
-const RESISTANCES_REDUCTION = new Modifier("+#% Monster Chaos Resistance +#% Monster Elemental Resistances", false); // 96
-const ALL_RESISTANCES_AND_REDUCTION = new Modifier("+#% Monster Physical Damage Reduction +#% Monster Chaos Resistance +#% Monster Elemental Resistances", true); // 5
-const FRENZY_CHARGE_ON_HIT = new Modifier("Monsters gain a Frenzy Charge on Hit", false); // 106
-const MAX_FRENZY_CHARGES_AND_CHARGE_ON_HIT = new Modifier("Monsters have +1 to Maximum Frenzy Charges Monsters gain a Frenzy Charge on Hit", true); // 25
-const POWER_CHARGE_ON_HIT = new Modifier("Monsters gain a Power Charge on Hit", false); // 107
-const MAX_POWER_CHARGES_AND_CHARGE_ON_HIT = new Modifier("Monsters have +1 to Maximum Power Charges Monsters gain a Power Charge on Hit", true); // 26
-const INCREASED_RARE_MONSTERS = new Modifier("#% increased number of Rare Monsters", false); // 129
-const RARE_MONSTERS_AND_MODIFIERS = new Modifier("#% increased number of Rare Monsters Rare Monsters each have 2 additional Modifiers", true); // 3
+    private mapping: Map<Modifier, Modifier[]> = new Map<Modifier, Modifier[]>();
 
-const mapping: Map<string, string[]> = new Map([
-    [MORE_MONSTER_LIFE, [MORE_MONSTER_LIFE, MORE_MONSTER_LIFE_CANNOT_BE_STUNNED]],
-    [MORE_MONSTER_LIFE_CANNOT_BE_STUNNED, [MORE_MONSTER_LIFE, MORE_MONSTER_LIFE_CANNOT_BE_STUNNED]],
+    constructor(modifiers: Modifier[]) {
+        let builder = new Map<number, Modifier>();
+        // create a local set with all indices and modifiers
+        for (let i = 0; i < this.array.length; i++) {
+            let array = this.array[i];
 
-    [PHYSICAL_TO_CHAOS_DAMAGE, [PHYSICAL_TO_CHAOS_DAMAGE, PHYSICAL_TO_CHAOS_DAMAGE_WITHER]],
-    [PHYSICAL_TO_CHAOS_DAMAGE_WITHER, [PHYSICAL_TO_CHAOS_DAMAGE, PHYSICAL_TO_CHAOS_DAMAGE_WITHER]],
+            let target = array[0];
+            let mod = modifiers[target];
+            let modifier = new Modifier(mod.getModifier(), mod.isT17());
 
-    [REFLECT_ELEMENTAL_DAMAGE, [REFLECT_ELEMENTAL_DAMAGE, REFLECT_ALL_DAMAGE]],
-    [REFLECT_PHYSICAL_DAMAGE, [REFLECT_PHYSICAL_DAMAGE, REFLECT_ALL_DAMAGE]],
-    [REFLECT_ALL_DAMAGE, [REFLECT_ELEMENTAL_DAMAGE, REFLECT_PHYSICAL_DAMAGE, REFLECT_ALL_DAMAGE]],
+            builder.set(target, modifier);
+        }
+        // iterate again to properly build mapping
+        for (let i = 0; i < this.array.length; i++) {
+            let array = this.array[i];
 
-    [FIRE_2_ADDITIONAL_PROJECTILES, [FIRE_2_ADDITIONAL_PROJECTILES, INCREASED_AOE_AND_PROJECTILES]],
-    [INCREASED_AOE, [INCREASED_AOE, INCREASED_AOE_AND_PROJECTILES]],
-    [INCREASED_AOE_AND_PROJECTILES, [INCREASED_AOE, FIRE_2_ADDITIONAL_PROJECTILES, INCREASED_AOE_AND_PROJECTILES]],
+            let target = array[0];
+            let indices = array[1];
 
-    [POISON_ON_HIT, [POISON_ON_HIT, POISON_ON_HIT_WITH_DURATION]],
-    [POISON_ON_HIT_WITH_DURATION, [POISON_ON_HIT, POISON_ON_HIT_WITH_DURATION]],
+            let modifier = builder.get(target);
 
-    [CURSED_WITH_ELEMENTAL_WEAKNESS, [CURSED_WITH_ELEMENTAL_WEAKNESS, CURSED_WITH_ALL]],
-    [CURSED_WITH_VULNERABILITY, [CURSED_WITH_VULNERABILITY, CURSED_WITH_ALL]],
-    [CURSED_WITH_TEMPORAL_CHAINS, [CURSED_WITH_TEMPORAL_CHAINS, CURSED_WITH_ALL]],
-    [CURSED_WITH_ALL, [CURSED_WITH_ELEMENTAL_WEAKNESS, CURSED_WITH_VULNERABILITY, CURSED_WITH_TEMPORAL_CHAINS]],
+            let arr: Modifier[] = [];
+            for (let j = 0; j < indices.length; j++) {
+                let index = indices[j];
+                let mod = builder.get(index);
+                if (mod) {
+                    arr.push(mod);
+                }
+            }
 
-    [PHYSICAL_DAMAGE_REDUCTION, [PHYSICAL_DAMAGE_REDUCTION, RESISTANCES_REDUCTION, ALL_RESISTANCES_AND_REDUCTION]],
-    [RESISTANCES_REDUCTION, [PHYSICAL_DAMAGE_REDUCTION, RESISTANCES_REDUCTION, ALL_RESISTANCES_AND_REDUCTION]],
-    [ALL_RESISTANCES_AND_REDUCTION, [PHYSICAL_DAMAGE_REDUCTION, RESISTANCES_REDUCTION, ALL_RESISTANCES_AND_REDUCTION]],
-
-    [FRENZY_CHARGE_ON_HIT, [FRENZY_CHARGE_ON_HIT, MAX_FRENZY_CHARGES_AND_CHARGE_ON_HIT]],
-    [MAX_FRENZY_CHARGES_AND_CHARGE_ON_HIT, [FRENZY_CHARGE_ON_HIT, MAX_FRENZY_CHARGES_AND_CHARGE_ON_HIT]],
-
-    [POWER_CHARGE_ON_HIT, [POWER_CHARGE_ON_HIT, MAX_POWER_CHARGES_AND_CHARGE_ON_HIT]],
-    [MAX_POWER_CHARGES_AND_CHARGE_ON_HIT, [POWER_CHARGE_ON_HIT, MAX_POWER_CHARGES_AND_CHARGE_ON_HIT]],
-
-    [INCREASED_RARE_MONSTERS, [INCREASED_RARE_MONSTERS, RARE_MONSTERS_AND_MODIFIERS]],
-    [RARE_MONSTERS_AND_MODIFIERS, [INCREASED_RARE_MONSTERS, RARE_MONSTERS_AND_MODIFIERS]],
-]);
-
-export function upgrade(required: Modifier[]): string[] {
-    const set = new Set(required);
-    const keys = Array.from(mapping.keys());
-
-    for (const modifier of required) {
-        let value = modifier.getModifier();
-        const matchedKeys = keys.filter(key => value === key);
-        for (const key of matchedKeys) {
-            const additions = mapping.get(key) || [];
-            for (const addition of additions) {
-                set.add(addition);
+            if (modifier && arr) {
+                this.mapping.set(modifier, arr);
             }
         }
     }
 
-    return Array.from(set);
+    // fill array with any mod that is associated to one of the present and required mods
+    public upgrade(t17: boolean, required: Modifier[]): Modifier[] {
+        const set = new Set(required);
+        const keys = Array.from(this.mapping.keys());
+
+        for (const modifier of required) {
+            for (const key of keys) {
+                if (modifier.equals(key)) {
+                    let associations = this.mapping.get(key) || [];
+                    for (const association of associations) {
+                        if (!association.isT17() || t17) {
+                            set.add(association);
+                        }
+                    }
+                }
+            }
+        }
+
+        return Array.from(set);
+    }
 }
