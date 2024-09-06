@@ -204,6 +204,28 @@ body.no-scroll {
     pointer-events: none;
 }
 
+.styled-button {
+    background-color: #4A90E2;
+    color: #FFF;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 24px;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.styled-button:hover {
+    background-color: #357ABD;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+}
+
+.styled-button:active {
+    background-color: #2C5AA0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 .hidden {
     display: none;
 }
