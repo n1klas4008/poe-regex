@@ -1,20 +1,20 @@
-import {upgrade} from "./T17";
 import {Modifier} from "./Modifier";
 import {ModifierType} from "./ModifierType";
 import {ExcludeFilter} from "./ExcludeFilter";
 import {Blacklist} from "./Blacklist";
+import {MapAssociation} from "./MapAssociation";
 
 const call = performance.now();
 
 let blacklist = new Blacklist();
 let modifiers: Modifier[] = [];
-let exclusive: string[] = [];
-let inclusive: string[] = [];
+let exclusive: Modifier[] = [];
+let inclusive: Modifier[] = [];
 
 document.addEventListener('DOMContentLoaded', () => {
     const entries = [
         "./league/settler/map.name.config",
-        "./league/settler/map.affix.config", // probably better to disable this due to heavy overlaps
+        "./league/settler/map.affix.config",
         "./league/settler/map.general.config"
     ];
     read(entries)
@@ -54,10 +54,13 @@ function setup() {
 }
 
 function generate() {
-    let exclude = new ExcludeFilter(modifiers, blacklist);
+    let exclude = new ExcludeFilter(false, modifiers, blacklist);
+
     let result: Set<string> = new Set<string>();
+    let association = new MapAssociation(modifiers);
     try {
-        exclude.create(result, upgrade(exclusive));
+        exclude.create(association, result, exclusive);
+
         let regex = Array.from(result).join("|").replace(/#/g, "\\d+");
         regex = `"!${regex}"`;
 
@@ -70,7 +73,6 @@ function generate() {
 }
 
 function modal(status: boolean) {
-    console.log("modal show: " + status);
     const overlay = document.getElementById('overlay')!;
     const modal = document.getElementById('modal')!;
     const body = document.body!;
@@ -119,7 +121,7 @@ function build(config: string) {
         let modifier = line[i].trim();
         let index = modifier.indexOf("(T17)");
         if (index != -1) modifier = modifier.substring(6);
-        const mod = new Modifier(modifier, index == -1);
+        const mod = new Modifier(modifier, index != -1);
         modifiers.push(mod);
         for (let j = 0; j < targets.length; j++) {
             let type = j == 0 ? ModifierType.EXCLUSIVE : ModifierType.INCLUSIVE;
@@ -140,9 +142,9 @@ function createSelectableContainer(type: ModifierType, modifier: Modifier): HTML
         let active = element.classList.contains('selected-item');
         let array = type == ModifierType.EXCLUSIVE ? exclusive : inclusive;
         if (active) {
-            array.push(modifier.getModifier());
+            array.push(modifier);
         } else {
-            const index = array.indexOf(modifier.getModifier());
+            const index = array.indexOf(modifier);
             if (index > -1) {
                 array.splice(index, 1);
             }

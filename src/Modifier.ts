@@ -14,4 +14,14 @@ export class Modifier {
     public isT17(): boolean {
         return this.t17;
     }
+
+    public equals(modifier: Modifier): boolean {
+        if (this === modifier) {
+            return true;
+        }
+        if (!modifier) {
+            return false;
+        }
+        return this.mod === modifier.getModifier() && this.t17 === modifier.isT17();
+    }
 }
