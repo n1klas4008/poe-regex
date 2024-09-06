@@ -268,6 +268,7 @@ function setup() {
     });
 
     document.getElementById('generate')!.addEventListener('click', () => {
+        previous = [];
         modal(true);
         construct();
     });
