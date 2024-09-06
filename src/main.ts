@@ -18,7 +18,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const entries = [
         "./league/settler/map.name.config",
         "./league/settler/map.affix.config",
-        "./league/settler/map.general.config"
+        "./league/settler/map.general.config",
+        "./league/settler/map.blacklist.config"
     ];
     read(entries)
         .then(responses => initialize(responses))
