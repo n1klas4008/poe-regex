@@ -136,7 +136,12 @@ body.no-scroll {
     display: flex;
     align-items: center;
     margin-left: auto;
-    animation: spin 1s linear;
+    transition: transform 0.2s ease;
+}
+
+.github:hover {
+    animation: spin 0.4s linear;
+    transform: scale(1.05);
 }
 
 @keyframes spin {
