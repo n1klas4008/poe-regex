@@ -8,7 +8,7 @@
     <title>exile.re</title>
 
     <meta content="exile.re" property="og:title">
-    <meta content="advanced regex generator" property="og:description">
+    <meta content="advanced map mod regex generator" property="og:description">
     <meta content="https://raw.githubusercontent.com/n1klas4008/poe-regex/gh-pages/logo.png" property="og:image">
     <meta content="#FFFFFF" data-react-helmet="true" name="theme-color">
 
@@ -48,6 +48,8 @@
             <input type="text" id="quantity" class="smart-input trigger-1">
             <span>Pack Size of at least</span>
             <input type="text" id="pack-size" class="smart-input trigger-1">
+            <span>Scarabs of at least</span>
+            <input type="text" id="scarabs" class="smart-input trigger-1">
         </div>
         <div class="config vertical">
             <div>
@@ -57,6 +59,10 @@
             <div>
                 <input type="checkbox" id="optimize-pack" class="trigger-0" checked>
                 <label for="optimize-pack"> Optimize Pack Size value</label>
+            </div>
+            <div>
+                <input type="checkbox" id="optimize-scarab" class="trigger-0" checked>
+                <label for="optimize-scarab"> Optimize Scarab value</label>
             </div>
         </div>
         <div class="config vertical">
@@ -90,16 +96,16 @@
 
             </div>
         </div>
-        <div id="inclusive" class="split-view-container disabled">
+        <div id="inclusive" class="split-view-container">
             <div class="filter-header">
-                <div class="column-header">FEATURE IN DEVELOPMENT</div>
+                <div class="column-header">I want these mods</div>
                 <div class="grid-group">
                     <div>
-                        <input type="checkbox" id="any" name="any" value="or">
+                        <input type="checkbox" id="any" class="btn-group-1 trigger-0 trigger-2">
                         <label for="any"> I want any of the modifiers</label>
                     </div>
                     <div>
-                        <input type="checkbox" id="all" name="all" value="and">
+                        <input type="checkbox" id="all" class="btn-group-1 trigger-0 trigger-2" checked>
                         <label for="all"> I want all of the modifiers</label>
                     </div>
                 </div>
