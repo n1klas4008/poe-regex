@@ -163,7 +163,8 @@ function construct() {
         let utility = buildUtilityExpression();
         let map = buildMapExpression();
 
-        let regex = (exclusive + inclusive + utility + map).trim();
+        let base = exclusive + (exclusive.length > 0 ? ' ' : '') + inclusive + (inclusive.length > 0 ? ' ' : '')
+        let regex = (base + utility + map).trim();
 
         document.getElementById('regex')!.innerText = regex;
 
@@ -203,8 +204,8 @@ function buildModifierExpression(any: boolean, type: ModifierType): string {
             selection.set(type, [...target]);
 
             if (any) {
-                regex = Array.from(result).join("|").replace(/#/g, "\\d+") + " ";
-                regex = regex.length > 0 ? `"${type == ModifierType.EXCLUSIVE ? '!' : ''}${regex}" ` : "";
+                regex = Array.from(result).join("|").replace(/#/g, "\\d+");
+                regex = regex.length > 0 ? `"${type == ModifierType.EXCLUSIVE ? '!' : ''}${regex}"` : "";
             } else {
                 let builder = "";
                 for (const mod of result) {
