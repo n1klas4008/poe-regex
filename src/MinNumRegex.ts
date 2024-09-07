@@ -42,9 +42,9 @@ export function generateRegularExpression(number: string, optimize: boolean, qua
             else base = `[${tens}-9].`;
             return quantity ? `(${base}|1..)` : base;
         } else if (tens === 9) {
-            return quantity ? `(${tens}[${digit}-9]|1..)` : `${tens}[${digit}-9]`;
+            return quantity ? `(${tens}[${digit}-9]|1..)` : `(${tens}[${digit}-9])`;
         } else {
-            return quantity ? `(${tens}[${digit}-9]|[${tens + 1}-9].|1..)` : `${tens}[${digit}-9]|[${tens + 1}-9].`;
+            return quantity ? `(${tens}[${digit}-9]|[${tens + 1}-9].|1..)` : `(${tens}[${digit}-9]|[${tens + 1}-9].)`;
         }
     } else if (input < 10) {
         if (input === 9) return "(9|\\d..?)"
