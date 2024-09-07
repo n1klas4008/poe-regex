@@ -1,4 +1,4 @@
-export function generateRegularExpression(number: string, optimize: boolean, smart: boolean): string | null {
+export function generateRegularExpression(number: string, optimize: boolean, quantity: boolean): string | null {
     let input = parseFloat(number);
     // input not a number
     if (isNaN(input)) {
@@ -17,8 +17,7 @@ export function generateRegularExpression(number: string, optimize: boolean, sma
 
     if (input >= 200) {
         // actual regex to capture 200 and higher would be '[2-9]\d{2}'
-        // we offer to "smart" shorten this since anything above 200 is very unlikely
-        return smart ? "2.." : "[2-9]\\d{2}";
+        return "2..";
     } else if (input === 199) {
         return "199";
     } else if (input > 100) {
@@ -31,19 +30,21 @@ export function generateRegularExpression(number: string, optimize: boolean, sma
                 return digit != 8 ? `19[${tens}-9]` : "19[89]";
             }
             // these won't match above 200, if we want a true match we would have to replace the start with \d
-            return smart ?
-                `1([${tens}-9][${digit}-9]|[${tens + 1}-9].)` :
-                `\\d([${tens}-9][${digit}-9]|[${tens + 1}-9].)`
+            return `1([${tens}-9][${digit}-9]|[${tens + 1}-9].)`;
         }
     } else if (input === 100) {
-        return "\d{3}"
+        return "\\d{3}"
     } else if (input >= 10) {
         if (digit === 0) {
-            return `([${tens}-9].|1..)`;
+            let base = "";
+            if (tens === 9) base = "9.";
+            else if (tens === 8) base = "[89].";
+            else `[${tens}-9].`;
+            return quantity ? `([${base}].|1..)` : base;
         } else if (tens === 9) {
-            return `(${tens}[${digit}-9]|1..)`;
+            return quantity ? `(${tens}[${digit}-9]|1..)` : `${tens}[${digit}-9]`;
         } else {
-            return `(${tens}[${digit}-9]|[${tens + 1}-9].|1..)`;
+            return quantity ? `(${tens}[${digit}-9]|[${tens + 1}-9].|1..)` : `${tens}[${digit}-9]|[${tens + 1}-9].`;
         }
     } else if (input < 10) {
         if (input === 9) return "(9|\\d..?)"
