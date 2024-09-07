@@ -43,26 +43,30 @@
         </div>
     </div>
     <div class="configuration">
-        <div class="config">
-            <span>Quantity of at least</span>
-            <input type="text" id="quantity" class="smart-input trigger-1">
-            <span>Pack Size of at least</span>
-            <input type="text" id="pack-size" class="smart-input trigger-1">
-            <span>Scarabs of at least</span>
-            <input type="text" id="scarabs" class="smart-input trigger-1">
-        </div>
         <div class="config vertical">
-            <div>
+            <div class="config">
+                <span class="config-space">Quantity of at least</span>
+                <input type="text" id="quantity" class="smart-input trigger-1">
                 <input type="checkbox" id="optimize-quantity" class="trigger-0" checked>
                 <label for="optimize-quantity"> Optimize Quantity value</label>
             </div>
-            <div>
+            <div class="config">
+                <span class="config-space">Pack Size of at least</span>
+                <input type="text" id="pack-size" class="smart-input trigger-1">
                 <input type="checkbox" id="optimize-pack" class="trigger-0" checked>
                 <label for="optimize-pack"> Optimize Pack Size value</label>
             </div>
-            <div>
+            <div class="config">
+                <span class="config-space">More Scarabs of at least</span>
+                <input type="text" id="scarabs" class="smart-input trigger-1">
                 <input type="checkbox" id="optimize-scarab" class="trigger-0" checked>
                 <label for="optimize-scarab"> Optimize Scarab value</label>
+            </div>
+            <div class="config">
+                <span class="config-space">More Maps of at least</span>
+                <input type="text" id="maps" class="smart-input trigger-1">
+                <input type="checkbox" id="optimize-maps" class="trigger-0" checked>
+                <label for="optimize-maps"> Optimize Map value</label>
             </div>
         </div>
         <div class="config vertical">
@@ -80,6 +84,15 @@
                 <input type="checkbox" id="maps-exclude" class="btn-group-0 trigger-0">
                 <label for="maps-exclude"> Exclude</label>
             </div>
+        </div>
+        <div class="config small-gap">
+            <span>Corrupted Maps</span>
+            <input type="checkbox" id="corrupted-include" class="trigger-0 trigger-3 btn-group-2">
+            <label for="corrupted-include"> Include</label>
+            <input type="checkbox" id="corrupted-exclude" class="trigger-0 trigger-3 btn-group-2">
+            <label for="corrupted-exclude"> Exclude</label>
+            <input type="checkbox" id="corrupted-ignore" class="trigger-0 trigger-3 btn-group-2" checked>
+            <label for="corrupted-ignore"> Ignore</label>
         </div>
         <div class="config">
             <input type="checkbox" id="t17" class="trigger-0">
