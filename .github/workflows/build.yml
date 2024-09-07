@@ -18,7 +18,7 @@ jobs:
     - name: Download Map Modifier JSON
       run: |
         curl -L -o map.data.json https://poedb.tw/us/api/MapMods
-    
+
     - name: Build Map Affix config
       run: |
         jq -r '.data[].Name' map.data.json > ./public/league/settler/map.affix.config
@@ -40,7 +40,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/dev'
 
     steps:
     - name: Checkout code
@@ -59,7 +59,7 @@ jobs:
     
     - name: Commit and push bundle.js
       run: |
-        git checkout main
+        git checkout dev
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         git add public/bundle.js
@@ -67,14 +67,13 @@ jobs:
           echo "No changes to commit"
         else
           git commit -m "Build: update bundle.js"
-          git push origin main
+          git push origin dev
         fi
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build
     if: github.ref == 'refs/heads/main'
 
     steps:
