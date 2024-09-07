@@ -134,26 +134,13 @@ body.no-scroll {
 
 .github {
     display: flex;
-    align-items: center;
+    font-size: 42px;
     margin-left: auto;
-    transition: transform 0.2s ease;
+    align-items: center;
 }
 
 .github:hover {
-    animation: spin 0.4s linear;
-    transform: scale(1.05);
-}
-
-@keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-.github:hover{
+    color: white;
     cursor: pointer;
 }
 
