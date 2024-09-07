@@ -36,11 +36,11 @@ export function generateRegularExpression(number: string, optimize: boolean, qua
         return "\\d{3}"
     } else if (input >= 10) {
         if (digit === 0) {
-            let base = "";
+            let base: string;
             if (tens === 9) base = "9.";
             else if (tens === 8) base = "[89].";
-            else `[${tens}-9].`;
-            return quantity ? `([${base}].|1..)` : base;
+            else base = `[${tens}-9].`;
+            return quantity ? `(${base}|1..)` : base;
         } else if (tens === 9) {
             return quantity ? `(${tens}[${digit}-9]|1..)` : `${tens}[${digit}-9]`;
         } else {
