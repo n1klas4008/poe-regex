@@ -10,6 +10,10 @@ html, body {
     color: #E0E0E0;
 }
 
+a {
+    all: unset;
+}
+
 #overlay {
     position: fixed;
     top: 0;
@@ -136,7 +140,8 @@ body.no-scroll {
 }
 
 .github:hover{
-    transform: scale(1.05);
+    transform: scale(1.1);
+    cursor: pointer;
 }
 
 .config {
