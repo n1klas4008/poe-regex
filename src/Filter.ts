@@ -3,7 +3,7 @@ import {Modifier} from "./Modifier";
 import {Blacklist} from "./Blacklist";
 import {MapAssociation} from "./MapAssociation";
 
-export class ExcludeFilter {
+export class Filter {
 
     private readonly modifiers: Modifier[];
     private readonly blacklist: Blacklist;
