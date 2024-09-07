@@ -1,18 +1,19 @@
 import {Modifier} from "./Modifier";
 import {ModifierType} from "./ModifierType";
-import {ExcludeFilter} from "./ExcludeFilter";
+import {Filter} from "./Filter";
 import {Blacklist} from "./Blacklist";
 import {MapAssociation} from "./MapAssociation";
 import {generateRegularExpression} from "./MinNumRegex";
 
 const call = performance.now();
 
+let selection: Map<ModifierType, Modifier[]> = new Map<ModifierType, Modifier[]>();
+let cache: Map<ModifierType, string> = new Map<ModifierType, string>();
 let blacklist = new Blacklist();
 let modifiers: Modifier[] = [];
 let exclusive: Modifier[] = [];
 let inclusive: Modifier[] = [];
-let previous: Modifier[] = [];
-let cache: string = "";
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const entries = [
@@ -155,11 +156,14 @@ function construct() {
     document.getElementById('regex')!.innerText = "crunching numbers...";
     document.getElementById('hint')!.innerText = "";
     setTimeout(() => {
-        let modifier = buildModifierExpression();
+        let any = (document.getElementById('any')! as HTMLInputElement).checked;
+
+        let exclusive = buildModifierExpression(true, ModifierType.EXCLUSIVE);
+        let inclusive = buildModifierExpression(any, ModifierType.INCLUSIVE);
         let utility = buildUtilityExpression();
         let map = buildMapExpression();
 
-        let regex = (modifier + utility + map).trim();
+        let regex = (exclusive + inclusive + utility + map).trim();
 
         document.getElementById('regex')!.innerText = regex;
 
@@ -184,25 +188,36 @@ function compare(arr1: any[], arr2: any[]): boolean {
     return true;
 }
 
-function buildModifierExpression(): string {
+function buildModifierExpression(any: boolean, type: ModifierType): string {
     const checkbox = document.getElementById('t17') as HTMLInputElement;
-    let exclude = new ExcludeFilter(checkbox.checked, modifiers, blacklist);
+    let filter = new Filter(checkbox.checked, modifiers, blacklist);
+    let target = type == ModifierType.EXCLUSIVE ? exclusive : inclusive;
+    let previous = selection.get(type) || [];
 
     let regex = "";
-    if (!compare(previous, exclusive)) {
+    if (!compare(previous, target)) {
         let result: Set<string> = new Set<string>();
         let association = new MapAssociation(modifiers);
         try {
-            exclude.create(association, result, exclusive);
-            previous = [...exclusive];
+            filter.create(association, result, target);
+            selection.set(type, [...target]);
 
-            regex = Array.from(result).join("|").replace(/#/g, "\\d+");
-            cache = regex.length > 0 ? (regex = `"!${regex}"`) : "";
+            if (any) {
+                regex = Array.from(result).join("|").replace(/#/g, "\\d+") + " ";
+                regex = regex.length > 0 ? `"${type == ModifierType.EXCLUSIVE ? '!' : ''}${regex}" ` : "";
+            } else {
+                let builder = "";
+                for (const mod of result) {
+                    builder += mod.includes(" ") ? `"${mod}" ` : `${mod} `;
+                }
+                regex = builder;
+            }
+            cache.set(type, regex);
         } catch (error) {
             console.error(error);
         }
     } else {
-        regex = cache;
+        regex = cache.get(type) || "";
     }
     return regex;
 }
@@ -212,12 +227,16 @@ function buildUtilityExpression(): string {
     let e1 = generateRegularExpression(quantity, (document.getElementById('optimize-quantity') as HTMLInputElement).checked, true);
 
     let pack = (document.getElementById('pack-size') as HTMLInputElement).value;
-    let e2 = generateRegularExpression(pack, (document.getElementById('optimize-pack') as HTMLInputElement).checked, true);
+    let e2 = generateRegularExpression(pack, (document.getElementById('optimize-pack') as HTMLInputElement).checked, false);
+
+    let scarab = (document.getElementById('scarabs') as HTMLInputElement).value;
+    let e3 = generateRegularExpression(scarab, (document.getElementById('optimize-scarab') as HTMLInputElement).checked, true);
 
     let expression = "";
 
-    if (e1) expression += ' "m q.*' + e1 + '%"'
-    if (e2) expression += ' "iz.*' + e2 + '%"'
+    if (e1) expression += '"m q.*' + e1 + '%" '
+    if (e2) expression += '"iz.*' + e2 + '%" '
+    if (e3) expression += '"abs.*' + e3 + '%" '
 
     return expression;
 }
@@ -269,7 +288,7 @@ function setup() {
     });
 
     document.getElementById('generate')!.addEventListener('click', () => {
-        previous = [];
+        selection.clear();
         modal(true);
         construct();
     });
@@ -283,6 +302,12 @@ function setup() {
     document.querySelectorAll('.trigger-1').forEach(element => {
         element.addEventListener('input', (event) => {
             construct();
+        })
+    });
+
+    document.querySelectorAll('.trigger-2').forEach(element => {
+        element.addEventListener('input', (event) => {
+            selection.delete(ModifierType.INCLUSIVE);
         })
     });
 
