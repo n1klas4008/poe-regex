@@ -124,6 +124,21 @@ body.no-scroll {
     gap: 5px;
 }
 
+.side-margin {
+    margin: 0 10px;
+}
+
+.github {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    transition: transform 0.3s ease;
+}
+
+.github:hover{
+    transform: scale(1.05);
+}
+
 .config {
     display: flex;
     padding-bottom: 10px;
