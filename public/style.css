@@ -116,6 +116,14 @@ body.no-scroll {
     font-size: 20px;
 }
 
+.config-space {
+    width: 200px;
+}
+
+.small-gap {
+    gap: 5px;
+}
+
 .config {
     display: flex;
     padding-bottom: 10px;
