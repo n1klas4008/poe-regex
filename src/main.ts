@@ -233,13 +233,21 @@ function buildUtilityExpression(): string {
     let scarab = (document.getElementById('scarabs') as HTMLInputElement).value;
     let e3 = generateRegularExpression(scarab, (document.getElementById('optimize-scarab') as HTMLInputElement).checked, true);
 
+    let maps = (document.getElementById('maps') as HTMLInputElement).value;
+    let e4 = generateRegularExpression(maps, (document.getElementById('optimize-maps') as HTMLInputElement).checked, true);
+
     let expression = "";
 
     if (e1) expression += '"m q.*' + e1 + '%" '
     if (e2) expression += '"iz.*' + e2 + '%" '
     if (e3) expression += '"abs.*' + e3 + '%" '
+    if (e4) expression += '"ps: ' + e4 + '%" '
 
     return expression;
+}
+
+function cleanup(array: Modifier[]): Modifier[] {
+    return array.filter(mod => !mod.getModifier().includes("Corrupted"));
 }
 
 function buildMapExpression(): string {
@@ -309,6 +317,36 @@ function setup() {
     document.querySelectorAll('.trigger-2').forEach(element => {
         element.addEventListener('input', (event) => {
             selection.delete(ModifierType.INCLUSIVE);
+        })
+    });
+
+    document.querySelectorAll('.trigger-3').forEach(element => {
+        element.addEventListener('input', (event) => {
+
+            exclusive = cleanup(exclusive);
+            inclusive = cleanup(inclusive);
+
+            let target = event.target as HTMLElement;
+            let type: ModifierType | null = null;
+
+            switch (target.id) {
+                case 'corrupted-include':
+                    type = ModifierType.INCLUSIVE;
+                    break;
+                case 'corrupted-exclude':
+                    type = ModifierType.EXCLUSIVE;
+                    break;
+                default:
+                    break;
+            }
+
+            if (type != null) {
+                let mod = new Modifier("Corrupted", false);
+                let array = type === ModifierType.EXCLUSIVE ? exclusive : inclusive;
+                array.push(mod);
+            }
+
+            construct();
         })
     });
 
