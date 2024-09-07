@@ -136,11 +136,19 @@ body.no-scroll {
     display: flex;
     align-items: center;
     margin-left: auto;
-    transition: transform 0.3s ease;
+    animation: spin 1s linear;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .github:hover{
-    transform: scale(1.1);
     cursor: pointer;
 }
 
