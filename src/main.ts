@@ -227,7 +227,7 @@ function buildSpecificUtilityExpression(main: string, secondary: string, unique:
     let quantity = (document.getElementById(main) as HTMLInputElement).value;
     let expression = generateRegularExpression(quantity, (document.getElementById(secondary) as HTMLInputElement).checked, true);
     if (expression === null) return null;
-    if (expression === '-1') {
+    if (expression === '') {
         return `"${unique}" `;
     } else {
         return `"${unique}${main === 'maps' ? '' : '.*'}${expression}%" `;

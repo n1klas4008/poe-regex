@@ -9,7 +9,7 @@ export function generateRegularExpression(number: string, optimize: boolean, qua
     if (optimize) input = Math.floor(input / 10) * 10;
     // zero does not have to be optimized
     if (input === 0) {
-        return "-1";
+        return "";
     }
 
     // anything past this point requires a regex
