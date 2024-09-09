@@ -223,25 +223,29 @@ function buildModifierExpression(any: boolean, type: ModifierType): string {
     return regex;
 }
 
+function buildSpecificUtilityExpression(main: string, secondary: string, unique: string) {
+    let quantity = (document.getElementById(main) as HTMLInputElement).value;
+    let expression = generateRegularExpression(quantity, (document.getElementById(secondary) as HTMLInputElement).checked, true);
+    if (expression === null) return null;
+    if (expression === '-1') {
+        return `"${unique}" `;
+    } else {
+        return `"${unique}${main === 'maps' ? '' : '.*'}${expression}%" `;
+    }
+}
+
 function buildUtilityExpression(): string {
-    let quantity = (document.getElementById('quantity') as HTMLInputElement).value;
-    let e1 = generateRegularExpression(quantity, (document.getElementById('optimize-quantity') as HTMLInputElement).checked, true);
-
-    let pack = (document.getElementById('pack-size') as HTMLInputElement).value;
-    let e2 = generateRegularExpression(pack, (document.getElementById('optimize-pack') as HTMLInputElement).checked, false);
-
-    let scarab = (document.getElementById('scarabs') as HTMLInputElement).value;
-    let e3 = generateRegularExpression(scarab, (document.getElementById('optimize-scarab') as HTMLInputElement).checked, true);
-
-    let maps = (document.getElementById('maps') as HTMLInputElement).value;
-    let e4 = generateRegularExpression(maps, (document.getElementById('optimize-maps') as HTMLInputElement).checked, true);
+    let e1 = buildSpecificUtilityExpression('quantity', 'optimize-quantity', 'm q');
+    let e2 = buildSpecificUtilityExpression('pack-size', 'optimize-pack', 'iz');
+    let e3 = buildSpecificUtilityExpression('scarabs', 'optimize-scarab', 'abs');
+    let e4 = buildSpecificUtilityExpression('maps', 'optimize-maps', 'ps: ');
 
     let expression = "";
 
-    if (e1) expression += '"m q.*' + e1 + '%" '
-    if (e2) expression += '"iz.*' + e2 + '%" '
-    if (e3) expression += '"abs.*' + e3 + '%" '
-    if (e4) expression += '"ps: ' + e4 + '%" '
+    if (e1) expression += e1;
+    if (e2) expression += e2;
+    if (e3) expression += e3;
+    if (e4) expression += e4;
 
     return expression;
 }

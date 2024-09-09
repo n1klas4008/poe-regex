@@ -4,10 +4,12 @@ export function generateRegularExpression(number: string, optimize: boolean, qua
     if (isNaN(input)) {
         return null;
     }
+    // if input is 0 before optimization ignore
+    if (input === 0) return null;
     if (optimize) input = Math.floor(input / 10) * 10;
     // zero does not have to be optimized
     if (input === 0) {
-        return null;
+        return "-1";
     }
 
     // anything past this point requires a regex
