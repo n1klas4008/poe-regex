@@ -1,6 +1,7 @@
 import {Modifier} from "./Modifier";
 import {ModifierType} from "./ModifierType";
-import {Filter} from "./Filter";
+import {FilterModifierAny} from "./FilterModifierAny";
+import {FilterModifierAll} from "./FilterModifierAll";
 import {Blacklist} from "./Blacklist";
 import {MapAssociation} from "./MapAssociation";
 import {generateRegularExpression} from "./MinNumRegex";
@@ -211,7 +212,9 @@ function compare(arr1: any[], arr2: any[]): boolean {
 
 function buildModifierExpression(any: boolean, type: ModifierType): string {
     const checkbox = document.getElementById('t17') as HTMLInputElement;
-    let filter = new Filter(checkbox.checked, modifiers, blacklist);
+    let filter = any ?
+        new FilterModifierAny(checkbox.checked, modifiers, blacklist) :
+        new FilterModifierAll(checkbox.checked, modifiers, blacklist);
     let target = type == ModifierType.EXCLUSIVE ? exclusive : inclusive;
     let previous = selection.get(type) || [];
 
@@ -220,7 +223,7 @@ function buildModifierExpression(any: boolean, type: ModifierType): string {
         let result: Set<string> = new Set<string>();
         let association = new MapAssociation(modifiers);
         try {
-            filter.create(association, result, target);
+            filter.create(association, result, target, 0);
             selection.set(type, [...target]);
 
             if (any) {
