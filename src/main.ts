@@ -84,12 +84,12 @@ function build(config: string) {
         modifiers.push(mod);
         for (let j = 0; j < targets.length; j++) {
             let type = j == 0 ? ModifierType.EXCLUSIVE : ModifierType.INCLUSIVE;
-            targets[j].appendChild(createSelectableContainer(type, mod));
+            targets[j].appendChild(createSelectableContainer(i, type, mod));
         }
     }
 }
 
-function createSelectableContainer(type: ModifierType, modifier: Modifier): HTMLDivElement {
+function createSelectableContainer(index: number, type: ModifierType, modifier: Modifier): HTMLDivElement {
     const div = document.createElement("div");
 
     div.classList.add("selectable");
@@ -97,25 +97,45 @@ function createSelectableContainer(type: ModifierType, modifier: Modifier): HTML
         div.classList.add("t17");
         div.style.display = "none";
     }
+    div.dataset.mod = index.toString();
     div.dataset.t17 = modifier.isT17().toString();
     div.textContent = modifier.getModifier();
     div.addEventListener('click', (event) => {
         let element = (event.target as HTMLElement);
+        if (element.classList.contains('disabled-item')) return;
         element.classList.toggle('selected-item');
         let active = element.classList.contains('selected-item');
         let array = type == ModifierType.EXCLUSIVE ? exclusive : inclusive;
-        if (active) {
-            array.push(modifier);
-        } else {
-            const index = array.indexOf(modifier);
-            if (index > -1) {
-                array.splice(index, 1);
-            }
-        }
+        disableCounterpartContainer(index, active, type, modifier);
+        handleModifierSelection(active, array, modifier);
         construct();
     });
 
     return div;
+}
+
+function handleModifierSelection(active: boolean, array: Modifier[], modifier: Modifier) {
+    if (active) {
+        array.push(modifier);
+    } else {
+        const index = array.indexOf(modifier);
+        if (index > -1) {
+            array.splice(index, 1);
+        }
+    }
+}
+
+function disableCounterpartContainer(index: number, active: boolean, type: ModifierType, modifier: Modifier) {
+    let target = type == ModifierType.EXCLUSIVE ? 'inclusive' : 'exclusive';
+    let element = document.querySelector(`#${target} .selectable[data-mod="${index}"]`)!;
+    if (active) {
+        element.classList.add('disabled-item');
+        // remove mod from opposite selection if somehow already present
+        let array = type == ModifierType.EXCLUSIVE ? inclusive : exclusive;
+        handleModifierSelection(!active, array, modifier);
+    } else {
+        element.classList.remove('disabled-item');
+    }
 }
 
 function exceptional(error: any) {
