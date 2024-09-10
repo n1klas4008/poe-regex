@@ -232,7 +232,8 @@ function buildModifierExpression(any: boolean, type: ModifierType): string {
             } else {
                 let builder = "";
                 for (const mod of result) {
-                    builder += mod.includes(" ") ? `"${mod}" ` : `${mod} `;
+                    let value = mod.replace(/#/g, "\\d+");
+                    builder += mod.includes(" ") ? `"${value}" ` : `${value} `;
                 }
                 regex = builder;
             }
