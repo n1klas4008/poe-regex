@@ -213,6 +213,14 @@ body.no-scroll {
     background: #007ACC !important;
 }
 
+.disabled-item {
+    background: #1A1A1A !important;
+}
+
+.disabled-item:hover {
+    cursor: default !important;
+}
+
 .disabled {
     position: relative;
     pointer-events: none;
