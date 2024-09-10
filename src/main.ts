@@ -254,7 +254,7 @@ function buildSpecificUtilityExpression(main: string, secondary: string, unique:
     if (expression === '') {
         return `"${unique}" `;
     } else {
-        return `"${unique}${main === 'maps' ? '' : '.*'}${expression}%" `;
+        return `"${unique}.*${expression}%" `;
     }
 }
 
@@ -262,7 +262,7 @@ function buildUtilityExpression(): string {
     let e1 = buildSpecificUtilityExpression('quantity', 'optimize-quantity', 'm q');
     let e2 = buildSpecificUtilityExpression('pack-size', 'optimize-pack', 'iz');
     let e3 = buildSpecificUtilityExpression('scarabs', 'optimize-scarab', 'abs');
-    let e4 = buildSpecificUtilityExpression('maps', 'optimize-maps', 'ps: ');
+    let e4 = buildSpecificUtilityExpression('maps', 'optimize-maps', 'ps:');
 
     let expression = "";
 
