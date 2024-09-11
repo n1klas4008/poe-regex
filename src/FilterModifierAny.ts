@@ -3,7 +3,7 @@ import {Modifier} from "./Modifier";
 import {MapAssociation} from "./MapAssociation";
 import {Filter} from "./Filter";
 
-export class FilterModifierAny extends Filter{
+export class FilterModifierAny extends Filter {
 
     protected check(substring: string, modifiers: Modifier[], result: Set<string>): boolean {
         for (let i = 0; i < this.modifiers.length; i++) {
@@ -62,31 +62,24 @@ export class FilterModifierAny extends Filter{
         }
 
         const map: Map<string, number> = new Map<string, number>();
-        let count = 2;
 
-        while (required.length > 0) {
-            const size = count;
-            const list: string[] = Array.from(options).filter(option => option.length === size);
+        const sorted: string[] = Array.from(options)
+            .filter(option => option.length >= 2)
+            .sort((a, b) => a.length - b.length);
 
-            // break if there is no more unique substrings present, and we have already found at least one
-            if (list.length === 0 && map.size > 0) break;
-
-            for (const substring of list) {
-                // stop if the substrings become to long to save time
-                if (substring.length >= 20) break;
-                // ensure substring is unique and not part of any other mod other than the ones we need
-                if (!this.check(substring, required, result)) continue;
-                // keep track how many of the mods we need, we can match with this one substring
-                for (const modifier of required) {
-                    if (!modifier.getModifier().toLowerCase().includes(substring.toLowerCase())) continue;
-                    if (!map.has(substring)) {
-                        map.set(substring, 0);
-                    }
-                    map.set(substring, (map.get(substring) || 0) + 1);
+        for (const substring of sorted) {
+            // stop if the substrings become to long to save time
+            if (substring.length >= 20) break;
+            // ensure substring is unique and not part of any other mod other than the ones we need
+            if (!this.check(substring, required, result)) continue;
+            // keep track how many of the mods we need, we can match with this one substring
+            for (const modifier of required) {
+                if (!modifier.getModifier().toLowerCase().includes(substring.toLowerCase())) continue;
+                if (!map.has(substring)) {
+                    map.set(substring, 0);
                 }
+                map.set(substring, (map.get(substring) || 0) + 1);
             }
-
-            count += 1;
         }
 
         // sort entries so that the ones matching the most with the least amount of characters is the first entry
