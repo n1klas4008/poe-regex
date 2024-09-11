@@ -3,6 +3,7 @@ import {ModifierType} from "./ModifierType";
 import {FilterModifierAny} from "./FilterModifierAny";
 import {FilterModifierAll} from "./FilterModifierAll";
 import {Blacklist} from "./Blacklist";
+import {associations} from "./Global";
 import {MapAssociation} from "./MapAssociation";
 import {generateRegularExpression} from "./MinNumRegex";
 
@@ -109,6 +110,7 @@ function createSelectableContainer(index: number, type: ModifierType, modifier: 
         let array = type == ModifierType.EXCLUSIVE ? exclusive : inclusive;
         disableCounterpartContainer(index, active, type, modifier);
         handleModifierSelection(active, array, modifier);
+        toggleChildContainer(index, active);
         construct();
     });
 
@@ -122,6 +124,27 @@ function handleModifierSelection(active: boolean, array: Modifier[], modifier: M
         const index = array.indexOf(modifier);
         if (index > -1) {
             array.splice(index, 1);
+        }
+    }
+}
+
+function toggleChildContainer(index: number, active: boolean) {
+    const types = Object.values(ModifierType).filter(value => typeof value === 'number');
+    for (const mapping of associations) {
+        if (mapping[0] === index) {
+            let children = mapping[1];
+            for (const child of children) {
+                for (const type of types) {
+                    let target = ModifierType[type].toLowerCase();
+                    let element = document.querySelector(`#${target} .selectable[data-mod="${child}"]`)!;
+                    if (active) {
+                        element.classList.add('disabled-item');
+                    } else {
+                        element.classList.remove('disabled-item');
+                    }
+                }
+            }
+            break;
         }
     }
 }
@@ -210,11 +233,23 @@ function compare(arr1: any[], arr2: any[]): boolean {
     return true;
 }
 
+function buildSuitableExcludeList(type: ModifierType): Blacklist {
+    let clone = new Blacklist();
+    if (type == ModifierType.EXCLUSIVE) {
+        clone.populate([...inclusive].map(o => o.getModifier()))
+    }
+    if (type == ModifierType.INCLUSIVE) {
+        clone.populate([...exclusive].map(o => o.getModifier()))
+    }
+    return clone;
+}
+
 function buildModifierExpression(any: boolean, type: ModifierType): string {
     const checkbox = document.getElementById('t17') as HTMLInputElement;
+    let excludes = buildSuitableExcludeList(type);
     let filter = any ?
-        new FilterModifierAny(checkbox.checked, modifiers, blacklist) :
-        new FilterModifierAll(checkbox.checked, modifiers, blacklist);
+        new FilterModifierAny(checkbox.checked, modifiers, excludes, blacklist) :
+        new FilterModifierAll(checkbox.checked, modifiers, excludes, blacklist);
     let target = type == ModifierType.EXCLUSIVE ? exclusive : inclusive;
     let previous = selection.get(type) || [];
 

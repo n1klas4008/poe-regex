@@ -1,49 +1,14 @@
 import {Modifier} from "./Modifier";
+import {associations} from "./Global";
 
 export class MapAssociation {
-
-    // array structure, index in map.mods.config, index of shared mods
-    private readonly array: any[] = [
-        [90, [91]],
-        [91, [90]],
-        [18, [60]],
-        [60, [18]],
-        [17, [84]],
-        [84, [17]],
-        [40, [52]],
-        [52, [40]],
-        [49, [50, 27]],
-        [50, [49, 27]],
-        [27, [49, 50]],
-        [61, [64, 25]],
-        [64, [61, 25]],
-        [25, [61, 64]],
-        [66, [14]],
-        [14, [66]],
-        [72, [74, 75, 33]],
-        [74, [72, 75, 33]],
-        [75, [72, 74, 33]],
-        [33, [72, 74, 75]],
-        [86, [92, 2]],
-        [92, [86, 2]],
-        [2, [86, 92]],
-        [102, [21]],
-        [21, [102]],
-        [103, [22]],
-        [22, [103]],
-        [125, [1]],
-        [1, [125]],
-        [62, [0]],
-        [0, [62]],
-    ];
-
     private mapping: Map<Modifier, Modifier[]> = new Map<Modifier, Modifier[]>();
 
     constructor(modifiers: Modifier[]) {
         let builder = new Map<number, Modifier>();
         // create a local set with all indices and modifiers
-        for (let i = 0; i < this.array.length; i++) {
-            let array = this.array[i];
+        for (let i = 0; i < associations.length; i++) {
+            let array = associations[i];
 
             let target = array[0];
             let mod = modifiers[target];
@@ -52,8 +17,8 @@ export class MapAssociation {
             builder.set(target, modifier);
         }
         // iterate again to properly build mapping
-        for (let i = 0; i < this.array.length; i++) {
-            let array = this.array[i];
+        for (let i = 0; i < associations.length; i++) {
+            let array = associations[i];
 
             let target = array[0];
             let indices = array[1];
@@ -100,9 +65,6 @@ export class MapAssociation {
                             }
                             // only add if it's not already matched by a result
                             if (!matched) {
-                                console.log("+ " + key.getModifier())
-                                console.log("> " + association.getModifier())
-                                console.log("---")
                                 set.add(association);
                             }
                         }
