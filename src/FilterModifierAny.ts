@@ -1,4 +1,3 @@
-import {substrings} from "./Global";
 import {Modifier} from "./Modifier";
 import {MapAssociation} from "./MapAssociation";
 import {Filter} from "./Filter";
@@ -6,6 +5,12 @@ import {Filter} from "./Filter";
 export class FilterModifierAny extends Filter {
 
     protected check(substring: string, modifiers: Modifier[], result: Set<string>): boolean {
+        // if the substring is excluded, instantly stop
+        if (this.excludes.blacklisted(substring)) {
+            return false;
+        }
+
+        // check if any other mod has issues with this substring
         for (let i = 0; i < this.modifiers.length; i++) {
             let modifier = this.modifiers[i];
             let info = modifier.getModifier().toLowerCase();
@@ -57,7 +62,7 @@ export class FilterModifierAny extends Filter {
         let options: Set<string> = new Set();
         for (let i = 0; i < required.length; i++) {
             let modifier = required[i];
-            let list = substrings(modifier, this.blacklist);
+            let list = this.substrings(modifier, this.blacklist);
             list.forEach(item => options.add(item));
         }
 
