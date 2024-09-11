@@ -8,6 +8,8 @@ export class MapAssociation {
         [91, [90]],
         [18, [60]],
         [60, [18]],
+        [17, [84]],
+        [84, [17]],
         [40, [52]],
         [52, [40]],
         [49, [50, 27]],
@@ -31,6 +33,8 @@ export class MapAssociation {
         [22, [103]],
         [125, [1]],
         [1, [125]],
+        [62, [0]],
+        [0, [62]],
     ];
 
     private mapping: Map<Modifier, Modifier[]> = new Map<Modifier, Modifier[]>();
