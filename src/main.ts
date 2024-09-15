@@ -298,6 +298,7 @@ function buildUtilityExpression(): string {
     let e2 = buildSpecificUtilityExpression('pack-size', 'optimize-pack', 'iz');
     let e3 = buildSpecificUtilityExpression('scarabs', 'optimize-scarab', 'abs');
     let e4 = buildSpecificUtilityExpression('maps', 'optimize-maps', 'ps:');
+    let e5 = buildSpecificUtilityExpression('currency', 'optimize-currency', 'urr');
 
     let expression = "";
 
@@ -305,6 +306,7 @@ function buildUtilityExpression(): string {
     if (e2) expression += e2;
     if (e3) expression += e3;
     if (e4) expression += e4;
+    if (e5) expression += e5;
 
     return expression;
 }
