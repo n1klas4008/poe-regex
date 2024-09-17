@@ -230,7 +230,7 @@ function debounce<T extends (...args: Parameters<T>) => void>(this: ThisParamete
     };
 }
 
-function construct() {
+function generate() {
     document.getElementById('regex')!.innerText = "crunching numbers...";
     document.getElementById('hint')!.innerText = "";
     setTimeout(() => {
@@ -250,8 +250,16 @@ function construct() {
 
         element.innerText = regex.length > 0 ? `length: ${regex.length} / 50` : '';
         element.style.color = (regex.length > 50) ? '#ff4d4d' : '#e0e0e0';
+
+        let compute = !(document.getElementById('optimize') as HTMLInputElement)!.checked;
+        if (!compute) modal('loading-modal', false);
     }, 100);
-    //if (!compare(previous, exclusive) || (cache.length == 0 && exclusive.length > 0)) modal(true);
+}
+
+function construct() {
+    let compute = !(document.getElementById('optimize') as HTMLInputElement)!.checked;
+    if (!compute) return;
+    generate();
 }
 
 function compare(arr1: any[], arr2: any[]): boolean {
@@ -492,6 +500,11 @@ function setup() {
 
     document.getElementById('import')!.addEventListener('click', () => {
         modal('import-modal', true);
+    });
+
+    document.getElementById('generate')!.addEventListener('click', () => {
+        modal('loading-modal', true);
+        generate();
     });
 
     document.getElementById('import-load')!.addEventListener('click', () => {
