@@ -33,9 +33,9 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(error => exceptional(error));
 });
 
-function modal(status: boolean) {
+function modal(id: string, status: boolean) {
     const overlay = document.getElementById('overlay')!;
-    const modal = document.getElementById('modal')!;
+    const modal = document.getElementById(id)!;
     const body = document.body!;
 
     overlay.classList.toggle('hidden', !status);
@@ -162,6 +162,12 @@ function disableCounterpartContainer(index: number, active: boolean, type: Modif
     }
 }
 
+function wipe() {
+    document.querySelectorAll('.selected-item, .disabled-item').forEach((element) => {
+        element.classList.remove('selected-item', 'disabled-item');
+    });
+}
+
 function exceptional(error: any) {
     console.error(error);
 }
@@ -216,8 +222,6 @@ function construct() {
 
         element.innerText = regex.length > 0 ? `length: ${regex.length} / 50` : '';
         element.style.color = (regex.length > 50) ? '#ff4d4d' : '#e0e0e0';
-
-        modal(false);
     }, 100);
     //if (!compare(previous, exclusive) || (cache.length == 0 && exclusive.length > 0)) modal(true);
 }
@@ -361,10 +365,34 @@ function setup() {
         });
     });
 
-    document.getElementById('generate')!.addEventListener('click', () => {
+    document.getElementById('clear')!.addEventListener('click', () => {
+        document.getElementById('regex')!.innerText = '';
+        document.getElementById('hint')!.innerText = '';
+        exclusive.length = 0;
+        inclusive.length = 0;
         selection.clear();
-        modal(true);
-        construct();
+        cache.clear()
+        wipe();
+    });
+
+    // thanks to Ycrew for this little snippet
+    document.getElementById('copy')!.addEventListener('click', () => {
+        let copyText: string = document.getElementById('regex')!.innerText;
+        navigator.clipboard.writeText(copyText);
+    });
+
+    document.getElementById('import')!.addEventListener('click', () => {
+        modal('import-modal', true);
+    });
+
+    document.querySelectorAll('.close-modal').forEach(element => {
+        element.addEventListener('click', function (event) {
+            const content = (event.target as HTMLElement).closest('.modal-content');
+            if (content && content.parentElement && content.parentElement.id) {
+                let id = content.parentElement.id;
+                modal(id, false);
+            }
+        });
     });
 
     document.querySelectorAll('.trigger-0').forEach(element => {

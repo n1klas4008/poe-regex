@@ -23,10 +23,16 @@
 
 <body>
 <div id="overlay" class="hidden"></div>
-<div id="modal" class="hidden">
-    <div class="modal-content">
-        <p>Crunching numbers</p>
-        <div class="loader"></div>
+<div id="import-modal" class="modal hidden">
+    <div class="modal-content flex vertical">
+        <p>Expression Import</p>
+        <input id="import-string" type="text" class="custom-input" placeholder="paste your expression here">
+        <div class="split-view-container no-space">
+            <div class="split-view space-evenly">
+                <button id="import-load" class="styled-button close-modal">Import RegEx</button>
+                <button class="styled-button close-modal">Close</button>
+            </div>
+        </div>
     </div>
 </div>
 <div id="wrapper">
@@ -47,7 +53,11 @@
                 <div id="hint" class="regex-hint grid-content"></div>
             </div>
             <div class="split-view-container display align-right">
-                <button id="generate" class="styled-button">Generate</button>
+                <div class="split-view">
+                    <button id="copy" class="styled-button side-margin">Copy to Clipboard</button>
+                    <!--<button id="import" class="styled-button side-margin">Import</button>-->
+                    <button id="clear" class="styled-button side-margin">Clear</button>
+                </div>
             </div>
         </div>
     </div>
