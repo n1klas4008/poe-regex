@@ -162,6 +162,12 @@ function disableCounterpartContainer(index: number, active: boolean, type: Modif
     }
 }
 
+function wipe() {
+    document.querySelectorAll('.selected-item, .disabled-item').forEach((element) => {
+        element.classList.remove('selected-item', 'disabled-item');
+    });
+}
+
 function exceptional(error: any) {
     console.error(error);
 }
@@ -361,10 +367,20 @@ function setup() {
         });
     });
 
-    document.getElementById('generate')!.addEventListener('click', () => {
+    document.getElementById('clear')!.addEventListener('click', () => {
+        document.getElementById('regex')!.innerText = '';
+        document.getElementById('hint')!.innerText = '';
+        exclusive.length = 0;
+        inclusive.length = 0;
         selection.clear();
-        modal(true);
-        construct();
+        cache.clear()
+        wipe();
+    });
+
+    // thanks to Ycrew for this little snippet
+    document.getElementById('copy')!.addEventListener('click', () => {
+        let copyText: string = document.getElementById('regex')!.innerText;
+        navigator.clipboard.writeText(copyText);
     });
 
     document.querySelectorAll('.trigger-0').forEach(element => {
