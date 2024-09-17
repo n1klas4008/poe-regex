@@ -28,8 +28,6 @@ a {
     position: fixed;
     top: 50%;
     left: 50%;
-    font-size: 24px;
-    font-weight: bold;
     transform: translate(-50%, -50%);
     background-color: #1E1E1E;
     color: #E0E0E0;
@@ -39,6 +37,11 @@ a {
     z-index: 1000;
     width: 300px;
     text-align: center;
+}
+
+.modal-headline {
+    font-size: 24px;
+    font-weight: bold;
 }
 
 .modal-content {
@@ -219,6 +222,10 @@ body.no-scroll {
     background: #2C2C2C;
     border-radius: 7px;
     padding: 5px;
+}
+
+.vaal {
+    background: rgba(108, 35, 35, 0.3);
 }
 
 .t17 {
