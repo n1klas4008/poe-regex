@@ -46,7 +46,16 @@ export function generateRegularExpression(number: string, optimize: boolean, qua
         } else if (tens === 9) {
             return quantity ? `(${tens}[${digit}-9]|1..)` : `(${tens}[${digit}-9])`;
         } else {
-            return quantity ? `(${tens}[${digit}-9]|[${tens + 1}-9].|1..)` : `(${tens}[${digit}-9]|[${tens + 1}-9].)`;
+            let optimized: string[] = [];
+            if (digit === 9) optimized.push("9");
+            else if (digit === 8) optimized.push("[89]");
+            else optimized.push(`[${digit}-9]`)
+
+            if (tens === 8) optimized.push("9.");
+            if (tens === 7) optimized.push("[89].");
+            else optimized.push(`[${tens + 1}-9].`)
+
+            return quantity ? `(${tens}${optimized[0]}|${optimized[1]}|1..)` : `(${tens}${optimized[0]}|${optimized[1]})`;
         }
     } else if (input < 10) {
         if (input === 9) return "(9|\\d..?)"
