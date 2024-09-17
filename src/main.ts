@@ -381,9 +381,11 @@ function setup() {
         navigator.clipboard.writeText(copyText);
     });
 
+    /*
     document.getElementById('import')!.addEventListener('click', () => {
         modal('import-modal', true);
     });
+    */
 
     document.querySelectorAll('.close-modal').forEach(element => {
         element.addEventListener('click', function (event) {
