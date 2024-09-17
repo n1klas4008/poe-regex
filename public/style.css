@@ -24,7 +24,7 @@ a {
     z-index: 999;
 }
 
-#modal {
+.modal {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -149,9 +149,30 @@ body.no-scroll {
     padding-bottom: 10px;
 }
 
+.custom-input {
+    background: #2E2E2E;
+    border-radius: 5px;
+    margin: 10px 0px;
+    font-size: 20px;
+    border: none;
+    color: white;
+}
+
+.space-evenly{
+    justify-content: space-between;
+}
+
+.modal-content input:focus {
+    outline: none;
+}
+
 .smart-input {
     margin: 0px 10px;
     width: 50px;
+}
+
+.flex {
+    display: flex;
 }
 
 .vertical {
@@ -260,6 +281,11 @@ body.no-scroll {
 .styled-button:active {
     background-color: #2C5AA0;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.no-space {
+    padding: 0px;
+    margin: 0px;
 }
 
 .hidden {
