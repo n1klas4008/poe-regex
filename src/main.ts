@@ -498,6 +498,14 @@ function setup() {
         importExpression();
     });
 
+    document.getElementById('report')!.addEventListener('click', () => {
+        window.open('https://github.com/n1klas4008/poe-regex/issues/new?assignees=&labels=bug&projects=&template=bug_report.md&title=', '_blank');
+    });
+
+    document.getElementById('suggest')!.addEventListener('click', () => {
+        window.open('https://github.com/n1klas4008/poe-regex/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.md&title=', '_blank');
+    });
+
     document.querySelectorAll('.close-modal').forEach(element => {
         element.addEventListener('click', function (event) {
             const content = (event.target as HTMLElement).closest('.modal-content');
