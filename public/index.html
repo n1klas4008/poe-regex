@@ -23,6 +23,13 @@
 
 <body>
 <div id="overlay" class="hidden"></div>
+<div id="loading-modal" class="modal hidden">
+    <div class="modal-content">
+        <p class="modal-headline highlight-headline">Crunching numbers</p>
+        <span>this might take some time!</span>
+        <div class="loader"></div>
+    </div>
+</div>
 <div id="import-modal" class="modal hidden">
     <div class="modal-content flex vertical">
         <p class="modal-headline highlight-headline">Expression Import</p>
@@ -58,6 +65,7 @@
             <div class="split-view-container display align-right">
                 <div class="split-view">
                     <button id="copy" class="styled-button side-margin">Copy to Clipboard</button>
+                    <button id="generate" class="styled-button side-margin">Generate</button>
                     <button id="import" class="styled-button side-margin">Import</button>
                     <button id="clear" class="styled-button side-margin">Clear</button>
                 </div>
@@ -134,6 +142,10 @@
                 <input type="checkbox" id="vaal" class="trigger-0">
                 <label for="vaal"> Vaal implicts are relevant</label>
             </div>
+        </div>
+        <div class="config">
+            <input type="checkbox" id="optimize">
+            <label for="optimize"> Calculate on Generate (tick for many mods)</label>
         </div>
     </div>
     <div class="split-view">
