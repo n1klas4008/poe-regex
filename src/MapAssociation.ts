@@ -12,7 +12,7 @@ export class MapAssociation {
 
             let target = array[0];
             let mod = modifiers[target];
-            let modifier = new Modifier(mod.getModifier(), mod.isT17());
+            let modifier = new Modifier(mod.getModifier(), mod.getMetadata());
 
             builder.set(target, modifier);
         }

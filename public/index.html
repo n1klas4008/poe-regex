@@ -25,8 +25,9 @@
 <div id="overlay" class="hidden"></div>
 <div id="import-modal" class="modal hidden">
     <div class="modal-content flex vertical">
-        <p>Expression Import</p>
-        <input id="import-string" type="text" class="custom-input" placeholder="paste your expression here">
+        <p class="modal-headline highlight-headline">Expression Import</p>
+        <span>feature in development</span>
+        <input id="import-string" type="text" class="custom-input" placeholder="paste your import string here">
         <div class="split-view-container no-space">
             <div class="split-view space-evenly">
                 <button id="import-load" class="styled-button close-modal">Import RegEx</button>
@@ -55,7 +56,7 @@
             <div class="split-view-container display align-right">
                 <div class="split-view">
                     <button id="copy" class="styled-button side-margin">Copy to Clipboard</button>
-                    <!--<button id="import" class="styled-button side-margin">Import</button>-->
+                    <button id="import" class="styled-button side-margin">Import</button>
                     <button id="clear" class="styled-button side-margin">Clear</button>
                 </div>
             </div>
@@ -122,9 +123,15 @@
             <input type="checkbox" id="corrupted-ignore" class="trigger-0 trigger-3 btn-group-2" checked>
             <label for="corrupted-ignore"> Ignore</label>
         </div>
-        <div class="config">
-            <input type="checkbox" id="t17" class="trigger-0">
-            <label for="t17"> T17 mods are relevant</label>
+        <div class="config vertical">
+            <div>
+                <input type="checkbox" id="t17" class="trigger-0">
+                <label for="t17"> T17 mods are relevant</label>
+            </div>
+            <div>
+                <input type="checkbox" id="vaal" class="trigger-0">
+                <label for="vaal"> Vaal implicts are relevant</label>
+            </div>
         </div>
     </div>
     <div class="split-view">

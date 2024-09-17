@@ -80,13 +80,24 @@ function build(config: string) {
     let targets = document.querySelectorAll(".mod-container")
     for (let i = 0; i < line.length; i++) {
         let modifier = line[i].trim();
-        let index = modifier.indexOf("(T17)");
-        if (index != -1) modifier = modifier.substring(6);
-        const mod = new Modifier(modifier, index != -1);
+        let args = modifier.startsWith('$');
+        let data = modifier.substring(1).split(";");
+        let attributes = args ? data.slice(0, -1) : [];
+        const mod = new Modifier(args ? data[data.length - 1] : modifier, attributes);
         modifiers.push(mod);
         for (let j = 0; j < targets.length; j++) {
             let type = j == 0 ? ModifierType.EXCLUSIVE : ModifierType.INCLUSIVE;
-            targets[j].appendChild(createSelectableContainer(i, type, mod));
+            let child = createSelectableContainer(i, type, mod);
+            if (type == ModifierType.EXCLUSIVE) {
+                targets[j].appendChild(child);
+            } else {
+                let parent = targets[j];
+                if (parent.children.length > 0) {
+                    parent.insertBefore(child, parent.children[0]);
+                } else {
+                    parent.appendChild(child);
+                }
+            }
         }
     }
 }
@@ -95,12 +106,19 @@ function createSelectableContainer(index: number, type: ModifierType, modifier: 
     const div = document.createElement("div");
 
     div.classList.add("selectable");
+
     if (modifier.isT17()) {
         div.classList.add("t17");
         div.style.display = "none";
     }
+    if (modifier.isVaal()) {
+        div.classList.add("vaal");
+        div.style.display = "none";
+    }
+
     div.dataset.mod = index.toString();
     div.dataset.t17 = modifier.isT17().toString();
+    div.dataset.vaal = modifier.isVaal().toString();
     div.textContent = modifier.getModifier();
     div.addEventListener('click', (event) => {
         let element = (event.target as HTMLElement);
@@ -163,6 +181,12 @@ function disableCounterpartContainer(index: number, active: boolean, type: Modif
 }
 
 function wipe() {
+    document.getElementById('regex')!.innerText = '';
+    document.getElementById('hint')!.innerText = '';
+    exclusive.length = 0;
+    inclusive.length = 0;
+    selection.clear();
+    cache.clear()
     document.querySelectorAll('.selected-item, .disabled-item').forEach((element) => {
         element.classList.remove('selected-item', 'disabled-item');
     });
@@ -176,12 +200,16 @@ function filter(element: HTMLElement) {
     const query = (element as HTMLInputElement).value;
     const container = (element as HTMLElement).closest('.container-search')?.nextElementSibling as HTMLElement;
     const t17 = document.getElementById('t17') as HTMLInputElement;
+    const vaal = document.getElementById('vaal') as HTMLInputElement;
     if (container && container.classList.contains('mod-container')) {
         let children = container.children;
         for (let i = 0; i < children.length; i++) {
             const child = children[i] as HTMLElement;
             if (child.textContent && child.textContent.toLowerCase().includes(query.toLowerCase())) {
-                if ((t17.checked && child.dataset.t17 === 'true') || child.dataset.t17 === 'false') {
+                let isT17 = t17.checked && child.dataset.t17 === 'true';
+                let isVaal = vaal.checked && child.dataset.vaal === 'true';
+                let isNormal = child.dataset.t17 === 'false' && child.dataset.vaal === 'false';
+                if (isT17 || isVaal || isNormal) {
                     child.style.display = '';
                 }
             } else {
@@ -249,11 +277,12 @@ function buildSuitableExcludeList(type: ModifierType): Blacklist {
 }
 
 function buildModifierExpression(any: boolean, type: ModifierType): string {
-    const checkbox = document.getElementById('t17') as HTMLInputElement;
+    const t17 = document.getElementById('t17') as HTMLInputElement;
+    const vaal = document.getElementById('vaal') as HTMLInputElement;
     let excludes = buildSuitableExcludeList(type);
     let filter = any ?
-        new FilterModifierAny(checkbox.checked, modifiers, excludes, blacklist) :
-        new FilterModifierAll(checkbox.checked, modifiers, excludes, blacklist);
+        new FilterModifierAny(t17.checked, vaal.checked, modifiers, excludes, blacklist) :
+        new FilterModifierAll(t17.checked, vaal.checked, modifiers, excludes, blacklist);
     let target = type == ModifierType.EXCLUSIVE ? exclusive : inclusive;
     let previous = selection.get(type) || [];
 
@@ -345,16 +374,10 @@ function mapExpressionHelper(maps: string[]): string {
     }
 }
 
-function setup() {
-    document.querySelectorAll('.container-search').forEach(element => {
-        element.addEventListener('input', (event) => {
-            filter(event.target as HTMLElement);
-        });
-    });
-
-    document.getElementById('t17')!.addEventListener('change', (event: Event) => {
+function handleAttribute(attribute: string) {
+    document.getElementById(attribute)!.addEventListener('change', (event: Event) => {
         const target = event.target as HTMLInputElement;
-        const elements = document.querySelectorAll('[data-t17="true"]');
+        const elements = document.querySelectorAll('[data-' + attribute + '="true"]');
         elements.forEach((e) => {
             let element = (e as HTMLElement);
             element.style.display = target.checked ? 'block' : 'none';
@@ -364,14 +387,100 @@ function setup() {
             filter(element as HTMLElement);
         });
     });
+}
+
+function parse(input: string): string[] {
+    const regex = /"([^"]*)"|[^\s]+/g;
+    let matches: string[] = [];
+    let match;
+    while ((match = regex.exec(input)) !== null) {
+        if (match[1]) {
+            matches.push(match[1]);
+        } else {
+            matches.push(match[0]);
+        }
+    }
+    return matches;
+}
+
+function toggleImplicitActive(id: string) {
+    const checkbox = document.getElementById(id) as HTMLInputElement;
+    checkbox.checked = true;
+
+    const event = new Event('change', {
+        bubbles: true,
+        cancelable: true
+    });
+
+    checkbox.dispatchEvent(event);
+}
+
+function handleBulkModImport(type: ModifierType, substrings: string[]) {
+    for (const substring of substrings) {
+        handleModImport(type, substring);
+    }
+}
+
+function handleModImport(type: ModifierType, substring: string) {
+    let target = type == ModifierType.EXCLUSIVE ? 'exclusive' : 'inclusive';
+    // iterate all selectable elements and find a match in the string
+    let elements = document.querySelectorAll(`#${target} .selectable`)!;
+    for (const element of elements) {
+        if (element.textContent!.toLowerCase().includes(substring)) {
+            // simulate click event to make sure all proper events are fired for now
+            const event = new MouseEvent('click', {
+                bubbles: true,
+                cancelable: true
+            });
+            element.dispatchEvent(event);
+        }
+    }
+}
+
+function importExpression() {
+    // wipe all settings first
+    wipe();
+
+    // enable T17 and Vaal for now until the import string is base64 and holds more valuable information
+    toggleImplicitActive('t17');
+    toggleImplicitActive('vaal');
+
+    let element = document.getElementById('import-string') as HTMLInputElement;
+    const query = element.value;
+    let entries = parse(query);
+    element.value = '';
+
+    for (const entry of entries) {
+        if (entry.startsWith("\!")) {
+            // exclusive-any
+            let excludes = entry.substring(1).split("\|");
+            handleBulkModImport(ModifierType.EXCLUSIVE, excludes);
+        } else if (entries.includes("\|")) {
+            // inclusive-any
+            let includes = entry.split("\|");
+            handleBulkModImport(ModifierType.INCLUSIVE, includes);
+        } else {
+            //inclusive all
+            let include = entry.startsWith("\"") ? entry.substring(1, entry.length - 1) : entry;
+            handleModImport(ModifierType.INCLUSIVE, include);
+        }
+    }
+
+    // construct regex based on imports
+    construct();
+}
+
+function setup() {
+    document.querySelectorAll('.container-search').forEach(element => {
+        element.addEventListener('input', (event) => {
+            filter(event.target as HTMLElement);
+        });
+    });
+
+    handleAttribute('t17');
+    handleAttribute('vaal');
 
     document.getElementById('clear')!.addEventListener('click', () => {
-        document.getElementById('regex')!.innerText = '';
-        document.getElementById('hint')!.innerText = '';
-        exclusive.length = 0;
-        inclusive.length = 0;
-        selection.clear();
-        cache.clear()
         wipe();
     });
 
@@ -381,11 +490,13 @@ function setup() {
         navigator.clipboard.writeText(copyText);
     });
 
-    /*
     document.getElementById('import')!.addEventListener('click', () => {
         modal('import-modal', true);
     });
-    */
+
+    document.getElementById('import-load')!.addEventListener('click', () => {
+        importExpression();
+    });
 
     document.querySelectorAll('.close-modal').forEach(element => {
         element.addEventListener('click', function (event) {
@@ -436,7 +547,7 @@ function setup() {
             }
 
             if (type != null) {
-                let mod = new Modifier("Corrupted", false);
+                let mod = new Modifier("Corrupted", []);
                 let array = type === ModifierType.EXCLUSIVE ? exclusive : inclusive;
                 array.push(mod);
             }
