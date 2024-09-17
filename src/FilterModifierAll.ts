@@ -19,6 +19,10 @@ export class FilterModifierAll extends Filter {
             if (modifier.isT17() && !this.t17) {
                 continue;
             }
+            // is this perhaps a vaal implicit mod that we can ignore
+            if (modifier.isVaal() && !this.vaal) {
+                continue;
+            }
             // if we do not need this mod, but it includes our substring reject it
             if ((!required && valid) || (required && !valid)) {
                 return false;

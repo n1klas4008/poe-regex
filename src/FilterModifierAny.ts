@@ -20,9 +20,14 @@ export class FilterModifierAny extends Filter {
                 if (modifier.isT17() && !this.t17) {
                     continue;
                 }
+
+                // is this perhaps a vaal implicit mod that we can ignore
+                if (modifier.isVaal() && !this.vaal) {
+                    continue;
+                }
+
                 // if the matched mod is not part of what we need this substring becomes unusable
                 // unless we already have a matching result for it
-
                 let match = false;
                 for (const regex of result) {
                     if (modifier.getModifier().toLowerCase().includes(regex)) {

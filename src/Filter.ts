@@ -7,12 +7,14 @@ export abstract class Filter {
     protected readonly modifiers: Modifier[];
     protected readonly blacklist: Blacklist;
     protected readonly excludes: Blacklist;
+    protected readonly vaal: boolean;
     protected readonly t17: boolean;
 
-    constructor(t17: boolean, modifiers: Modifier[], excludes: Blacklist, blacklist: Blacklist) {
+    constructor(t17: boolean, vaal: boolean, modifiers: Modifier[], excludes: Blacklist, blacklist: Blacklist) {
         this.modifiers = modifiers;
         this.blacklist = blacklist;
         this.excludes = excludes;
+        this.vaal = vaal;
         this.t17 = t17;
     }
 
