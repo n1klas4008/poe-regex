@@ -51,6 +51,8 @@ export class FilterModifierAll extends Filter {
             let matches: string[] = [];
             let sorted = Array.from(options).sort((a, b) => a.length - b.length);
             for (const substring of sorted) {
+                // ensure substring does not start or end with a space
+                if (substring.startsWith(' ') || substring.endsWith(' ')) continue;
                 // ensure substring is unique to itself and no other mod other than the exceptions
                 if (!this.check(substring, exception, result)) continue;
                 matches.push(substring);
