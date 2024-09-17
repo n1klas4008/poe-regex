@@ -142,7 +142,7 @@ body.no-scroll {
     align-items: center;
 }
 
-.github:hover {
+.github-icon:hover {
     color: white;
     cursor: pointer;
 }
@@ -161,7 +161,7 @@ body.no-scroll {
     color: white;
 }
 
-.space-evenly{
+.space-evenly {
     justify-content: space-between;
 }
 
@@ -287,6 +287,20 @@ body.no-scroll {
 
 .styled-button:active {
     background-color: #2C5AA0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-button {
+    background-color: #333333;
+}
+
+.header-button:hover {
+    background-color: #4D4D4D;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+}
+
+.header-button:active {
+    background-color: #1A1A1A;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
