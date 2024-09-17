@@ -75,6 +75,8 @@ export class FilterModifierAny extends Filter {
         for (const substring of sorted) {
             // stop if the substrings become to long to save time
             if (substring.length >= 20) break;
+            // ensure substring does not start or end with a space
+            if (substring.startsWith(' ') || substring.endsWith(' ')) continue;
             // ensure substring is unique and not part of any other mod other than the ones we need
             if (!this.check(substring, required, result)) continue;
             // keep track how many of the mods we need, we can match with this one substring
