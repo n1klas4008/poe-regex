@@ -3,7 +3,6 @@ name: Build Project
 on:
   push:
     branches:
-      - main
       - dev
 
 jobs:
@@ -72,21 +71,3 @@ jobs:
         fi
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  deploy:
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-
-    - name: Copy CNAME file
-      run: |
-        echo 'exile.re' > ./public/CNAME
-
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./public
