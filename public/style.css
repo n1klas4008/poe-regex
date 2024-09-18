@@ -221,6 +221,7 @@ body.no-scroll {
 .selectable {
     background: #2C2C2C;
     border-radius: 7px;
+    white-space: pre;
     padding: 5px;
 }
 
