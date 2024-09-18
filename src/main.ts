@@ -67,11 +67,12 @@ async function read(urls: string[]): Promise<string[]> {
 
 function initialize(array: string[]): Blacklist {
     const blacklist = new Blacklist();
-    for (let i = 0; i < array.length; i++) {
+    for (let i = 0; i < array.length - 1; i++) {
         let content = array[i];
         let lines = content.split("\n");
         blacklist.populate(lines);
     }
+    blacklist.lock(array[array.length - 1].split("\n"));
     return blacklist;
 }
 
@@ -119,7 +120,7 @@ function createSelectableContainer(index: number, type: ModifierType, modifier: 
     div.dataset.mod = index.toString();
     div.dataset.t17 = modifier.isT17().toString();
     div.dataset.vaal = modifier.isVaal().toString();
-    div.textContent = modifier.getModifier();
+    div.textContent = modifier.getModifier().replace(/\\n/g, "\n");
     div.addEventListener('click', (event) => {
         let element = (event.target as HTMLElement);
         if (element.classList.contains('disabled-item')) return;
