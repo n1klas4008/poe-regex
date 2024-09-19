@@ -135,7 +135,12 @@ body.no-scroll {
     margin: 0 10px;
 }
 
-.github {
+.discord-icon:hover {
+    color: white;
+    cursor: pointer;
+}
+
+.header-sidebar {
     display: flex;
     font-size: 24px;
     margin-left: auto;

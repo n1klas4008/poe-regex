@@ -54,6 +54,10 @@ export class MapAssociation {
                 if (modifier.equals(key)) {
                     let associations = this.mapping.get(key) || [];
                     for (const association of associations) {
+                        // skip this upgrade if it is supposed to be ignored
+                        if (modifier.isIncludedBypass(association.getIndex())) continue;
+                        // the mod "#% more Monster Life" is a special exception since it shares its attribute
+                        // with another non t17 mod
                         if (t17 || association.isT17() || association.getModifier().includes("#% more Monster Life")) {
                             // check if we have this matched already, assume no by default
                             let matched = false;

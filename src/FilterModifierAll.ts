@@ -45,7 +45,9 @@ export class FilterModifierAll extends Filter {
             // figure out any mod that contains our target mod as a reference for later
             for (const i in this.modifiers) {
                 let mod = this.modifiers[i];
-                if (mod.getModifier().toLowerCase().includes(modifier.getModifier().toLowerCase())) {
+                let direct = modifier.getModifier().toLowerCase().includes(mod.getModifier().toLowerCase());
+                let reversed = mod.getModifier().toLowerCase().includes(modifier.getModifier().toLowerCase());
+                if (direct || reversed) {
                     exception.push(mod);
                 }
             }
@@ -82,8 +84,13 @@ export class FilterModifierAll extends Filter {
                 return space1 === space2 ? 0 : space1 ? 1 : -1;
             });
 
+            let fallback = modifier.getFallback();
             if (matches.length > 0) {
-                result.add(matches[0])
+                let optimized = this.optimize(matches[0], required);
+                let ideal = optimized.getIdealResult();
+                result.add(ideal)
+            } else if (fallback) {
+                result.add(fallback);
             }
         }
     }

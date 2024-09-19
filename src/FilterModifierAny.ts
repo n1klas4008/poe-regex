@@ -108,9 +108,17 @@ export class FilterModifierAny extends Filter {
             return length1 - length2;
         });
 
-        // pick the best result and remove all mods it matches from the required list
-        const ideal = entries[0][0];
-        required = required.filter(modifier => !modifier.getModifier().toLowerCase().includes(ideal));
+        // double check with fallback values if there is any better match than the computed one
+        let proposed = entries.length != 0 ? entries[0][0] : null;
+        let optimized = this.optimize(proposed, required);
+        let expression = optimized.getRegularExpression();
+        let ideal = optimized.getIdealResult();
+
+        console.log(ideal)
+
+        // remove all mods that are matched with the substring from the required mods
+        required = required.filter(modifier => !expression.test(modifier.getModifier().toLowerCase()));
+
         // add substring to the result set
         result.add(ideal);
 
