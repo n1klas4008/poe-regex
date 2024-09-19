@@ -578,6 +578,13 @@ function setup() {
         })
     });
 
+    document.querySelectorAll('.trigger-4').forEach(element => {
+        element.addEventListener('change', (event) => {
+            selection.clear();
+            construct();
+        })
+    });
+
     const checkboxes = document.querySelectorAll<HTMLInputElement>('input[type="checkbox"]');
     checkboxes.forEach(checkbox => {
         checkbox.addEventListener('change', () => {
