@@ -5,6 +5,8 @@ export class Modifier {
     private readonly active: boolean;
     private readonly t17: boolean = false;
     private readonly vaal: boolean = false;
+    private readonly fallback: string | null = null;
+    private readonly bypass: Set<number> = new Set();
 
     constructor(mod: string, args: string[]) {
         this.mod = mod;
@@ -12,19 +14,33 @@ export class Modifier {
         this.index = Number(args[0]);
         this.active = Boolean(args[1]);
         for (const arg of args) {
-            switch (arg) {
-                case 't17':
-                    this.t17 = true;
-                    break
-                case 'vaal':
-                    this.vaal = true;
-                    break
+            if (arg.startsWith('bypass')) {
+                arg.split("=", 2)[1].split(",").map(o => Number(o)).forEach(value => this.bypass.add(value));
+            } else if (arg.startsWith('fallback')) {
+                this.fallback = arg.split("=", 2)[1];
+            } else {
+                switch (arg) {
+                    case 't17':
+                        this.t17 = true;
+                        break
+                    case 'vaal':
+                        this.vaal = true;
+                        break
+                }
             }
         }
     }
 
+    public isIncludedBypass(id: number): boolean {
+        return this.bypass.has(id);
+    }
+
     public getMetadata(): string[] {
         return [...this.args];
+    }
+
+    public getFallback(): string | null {
+        return this.fallback;
     }
 
     public getModifier(): string {
@@ -54,7 +70,8 @@ export class Modifier {
         if (!modifier) {
             return false;
         }
-        return this.mod === modifier.getModifier() &&
+        return this.fallback === modifier.getFallback() &&
+            this.mod === modifier.getModifier() &&
             this.active === modifier.isActive() &&
             this.index === modifier.getIndex() &&
             this.vaal === modifier.isVaal() &&

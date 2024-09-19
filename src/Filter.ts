@@ -1,3 +1,4 @@
+import {Result} from "./Result";
 import {Modifier} from "./Modifier";
 import {Blacklist} from "./Blacklist";
 import {MapAssociation} from "./MapAssociation";
@@ -53,5 +54,38 @@ export abstract class Filter {
 
         set.sort((a, b) => a.length - b.length);
         return set;
+    }
+
+    protected optimize(ideal: string | null, required: Modifier[]): Result {
+        let fallback = required[0].getFallback();
+        let expression: RegExp | null;
+
+        if (ideal != null) {
+            // check how many mods match the ideal result and check their fallback values
+            let captured = [...new Set(
+                required
+                    .filter(modifier => modifier.getModifier().toLowerCase().includes(ideal!))
+                    .map(modifier => modifier.getFallback())
+            )];
+
+            // if there is only one fallback value available, use it as it will cover all mods ideal matched before
+            if (captured.length === 1 && captured[0]) {
+                expression = new RegExp(captured[0]);
+                ideal = captured[0];
+            } else {
+                // escape the regex since this could include characters like +, # or other
+                expression = new RegExp(this.escape(ideal));
+            }
+        } else if (fallback) {
+            expression = new RegExp(fallback);
+            ideal = fallback;
+        } else {
+            throw new Error("Unable to find a result for specified configuration")
+        }
+        return new Result(ideal, expression);
+    }
+
+    protected escape(string: string): string {
+        return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
 }

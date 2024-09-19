@@ -324,9 +324,9 @@ function buildModifierExpression(any: boolean, type: ModifierType): string {
     return regex;
 }
 
-function buildSpecificUtilityExpression(main: string, secondary: string, unique: string) {
+function buildSpecificUtilityExpression(main: string, secondary: string, unique: string, cap: boolean) {
     let quantity = (document.getElementById(main) as HTMLInputElement).value;
-    let expression = generateRegularExpression(quantity, (document.getElementById(secondary) as HTMLInputElement).checked, true);
+    let expression = generateRegularExpression(quantity, (document.getElementById(secondary) as HTMLInputElement).checked, cap);
     if (expression === null) return null;
     if (expression === '') {
         return `"${unique}" `;
@@ -336,11 +336,12 @@ function buildSpecificUtilityExpression(main: string, secondary: string, unique:
 }
 
 function buildUtilityExpression(): string {
-    let e1 = buildSpecificUtilityExpression('quantity', 'optimize-quantity', 'm q');
-    let e2 = buildSpecificUtilityExpression('pack-size', 'optimize-pack', 'iz');
-    let e3 = buildSpecificUtilityExpression('scarabs', 'optimize-scarab', 'abs');
-    let e4 = buildSpecificUtilityExpression('maps', 'optimize-maps', 'ps:');
-    let e5 = buildSpecificUtilityExpression('currency', 'optimize-currency', 'urr');
+    let e1 = buildSpecificUtilityExpression('quantity', 'optimize-quantity', 'm q', true);
+    let e2 = buildSpecificUtilityExpression('pack-size', 'optimize-pack', 'iz', true);
+    let e3 = buildSpecificUtilityExpression('scarabs', 'optimize-scarab', 'abs', true);
+    let e4 = buildSpecificUtilityExpression('maps', 'optimize-maps', 'ps:', true);
+    let e5 = buildSpecificUtilityExpression('currency', 'optimize-currency', 'urr', true);
+    let e6 = buildSpecificUtilityExpression('rarity', 'optimize-rarity', 'm r.*y', true);
 
     let expression = "";
 
@@ -349,6 +350,7 @@ function buildUtilityExpression(): string {
     if (e3) expression += e3;
     if (e4) expression += e4;
     if (e5) expression += e5;
+    if (e6) expression += e6;
 
     return expression;
 }
