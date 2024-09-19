@@ -102,8 +102,8 @@ export class FilterModifierAny extends Filter {
                 return comparison;
             }
 
-            const length1 = e1[0].length + (e1[0].includes("#") ? 2 : 0);
-            const length2 = e2[0].length + (e2[0].includes("#") ? 2 : 0);
+            const length1 = e1[0].length + (e1[0].includes("#") ? 3 : 0);
+            const length2 = e2[0].length + (e2[0].includes("#") ? 3 : 0);
 
             return length1 - length2;
         });

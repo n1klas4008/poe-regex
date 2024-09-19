@@ -65,8 +65,15 @@ export class FilterModifierAll extends Filter {
             // sort all matches based on their real length
             // sort equal length results based on if they contain a space or not
             matches.sort((a, b) => {
-                const length1 = a.includes("#") || a.includes(" ") ? a.length + 2 : a.length;
-                const length2 = b.includes("#") || b.includes(" ") ? b.length + 2 : b.length;
+                let length1 = a.length;
+                let length2 = b.length;
+
+                length1 += a.includes("#") ? 3 : 0;
+                length2 += b.includes("#") ? 3 : 0;
+
+                length1 += a.includes(" ") ? 2 : 0;
+                length2 += b.includes(" ") ? 2 : 0;
+
                 if (length1 !== length2) {
                     return length1 - length2;
                 }
