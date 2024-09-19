@@ -224,9 +224,9 @@ body.no-scroll {
 }
 
 .selectable {
+    white-space: break-spaces;
     background: #2C2C2C;
     border-radius: 7px;
-    white-space: pre;
     padding: 5px;
 }
 
