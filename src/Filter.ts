@@ -47,6 +47,10 @@ export abstract class Filter {
                 }
             }
         }
+
+        // manually bypass blacklist with pte
+        if (modifier === 'corrupted') set.push("pte");
+
         set.sort((a, b) => a.length - b.length);
         return set;
     }
