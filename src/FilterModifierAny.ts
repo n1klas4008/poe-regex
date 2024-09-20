@@ -117,7 +117,9 @@ export class FilterModifierAny extends Filter {
         console.log(ideal)
 
         // remove all mods that are matched with the substring from the required mods
-        required = required.filter(modifier => !expression.test(modifier.getModifier().toLowerCase()));
+        required = required.filter(modifier => {
+            return !modifier.getModifier().toLowerCase().split('\\n').some(line => expression.test(line));
+        });
 
         // add substring to the result set
         result.add(ideal);
