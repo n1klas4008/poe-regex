@@ -130,6 +130,10 @@ function createSelectableContainer(index: number, type: ModifierType, modifier: 
         disableCounterpartContainer(index, active, type, modifier);
         handleModifierSelection(active, array, modifier);
         toggleChildContainer(index, active);
+
+        let compute = (document.getElementById('optimize') as HTMLInputElement)!.checked;
+        if (!compute) modal('loading-modal', true);
+
         construct();
     });
 
@@ -252,8 +256,7 @@ function generate() {
         element.innerText = regex.length > 0 ? `length: ${regex.length} / 50` : '';
         element.style.color = (regex.length > 50) ? '#ff4d4d' : '#e0e0e0';
 
-        let compute = !(document.getElementById('optimize') as HTMLInputElement)!.checked;
-        if (!compute) modal('loading-modal', false);
+        modal('loading-modal', false);
     }, 100);
 }
 
